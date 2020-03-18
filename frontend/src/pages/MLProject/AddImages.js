@@ -50,7 +50,7 @@ class AddImages extends React.Component {
       loadingFile,
       selectedCollection,
     } = this.state;
-    console.log(selectedCollection);
+    console.log('selectedCollection', selectedCollection);
     return (
       <>
         <Row>

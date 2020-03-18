@@ -1,7 +1,7 @@
 import React from 'react';
-import { Row, Card, Input, Typography, Popconfirm } from 'antd';
+import { Row, Card, Input, Typography, Popconfirm, Tooltip } from 'antd';
 import { router } from 'umi';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, UndoOutlined } from '@ant-design/icons';
 
 // const SAMPLES = [{ id: 1 }, { id: 2 }, { id: 3 }];
 const { Meta } = Card;
@@ -39,13 +39,25 @@ class ImageCollection extends React.Component {
           </div>
         }
         actions={[
-          <EditOutlined
-            key="edit"
-            onClick={e => {
-              e.stopPropagation();
-              this.setState({ editing: true });
-            }}
-          />,
+          editing ? (
+            <Row
+              type="flex"
+              justify="center"
+              align="middle"
+              onClick={() => this.setState({ editing: false, editName: null })}
+            >
+              Cancel
+              <UndoOutlined key="cancel" style={{ marginLeft: 8 }} />
+            </Row>
+          ) : (
+            <EditOutlined
+              key="edit"
+              onClick={e => {
+                e.stopPropagation();
+                this.setState({ editing: true });
+              }}
+            />
+          ),
           <Popconfirm title="Confirm to delete this collection?" onConfirm={handleDeleteCollection}>
             <DeleteOutlined
               key="delete"
@@ -61,19 +73,25 @@ class ImageCollection extends React.Component {
               {editing ? (
                 <Input
                   autoFocus
-                  style={{ border: 'none' }}
+                  allowClear
+                  // suffix={<EnterOutlined />}
+                  style={{ border: 'none', padding: '0 11px', height: 25 }}
                   value={editName || editName === '' ? editName : initialName}
                   onChange={e => {
                     e.stopPropagation();
                     this.setState({ editName: e.target.value });
                   }}
                   onPressEnter={() => {
-                    handleChangeName(editName);
+                    if (editName) {
+                      handleChangeName(editName);
+                    }
                     this.setState({ editing: false, editName: null });
                   }}
                 />
               ) : (
-                <Typography.Text>{imgCollection.name}</Typography.Text>
+                <Tooltip title={imgCollection.name}>
+                  <Typography.Text ellipsis>{imgCollection.name}</Typography.Text>
+                </Tooltip>
               )}
             </Row>
           }
