@@ -71,7 +71,7 @@ const ImageCollection = () => {
       >
         <Row gutter={[16, 16]}>
           {FAKE_IMAGES.map(image => (
-            <Col xs={24} sm={12} md={6} lg={4} xl={3} id={image.id}>
+            <Col xs={24} sm={12} md={6} lg={4} xl={3} id={image.id} key={image.id}>
               <ImageCard
                 image={image}
                 handleOpenPreview={img => {

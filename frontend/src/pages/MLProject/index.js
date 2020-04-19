@@ -12,9 +12,9 @@ import VideoList from './VideoList';
 const { TabPane } = Tabs;
 
 const SAMPLES = [
-  { id: 1, name: 'cat' },
-  { id: 2, name: 'dog' },
-  { id: 3, name: 'butterfly' },
+  { id: 'sdafdsao12', name: 'cat' },
+  { id: '1254njh98', name: 'dog' },
+  { id: 'fasdho330', name: 'butterfly' },
 ];
 
 const MLProject = props => {
@@ -51,7 +51,7 @@ const MLProject = props => {
             <AddImages />
             <Row gutter={[16, 16]}>
               {samples.map(imgCollection => (
-                <Col xs={24} sm={12} md={8} xl={6} id={imgCollection.id}>
+                <Col xs={24} sm={12} md={8} xl={6} key={imgCollection.id}>
                   <ImageCollectionCard
                     projectId={params && params.project_id}
                     imgCollection={imgCollection}

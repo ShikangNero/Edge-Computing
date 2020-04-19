@@ -46,7 +46,7 @@ const MLDashboard = props => {
       <Row gutter={[16, 16]}>
         {projects &&
           projects.map(project => (
-            <Col xs={24} md={12} lg={8}>
+            <Col xs={24} md={12} lg={8} key={project.id}>
               <ProjectCard
                 project={project}
                 handleDeleteProject={() => {
