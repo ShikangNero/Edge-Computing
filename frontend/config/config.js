@@ -1,9 +1,10 @@
-import defaultSettings from './defaultSettings'; // https://umijs.org/config/
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 import slash from 'slash2';
+import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 import themePluginConfig from './themePluginConfig';
 import proxy from './proxy';
 import webpackPlugin from './plugin.config';
+
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
@@ -119,10 +120,16 @@ export default {
               component: './MLProject',
             },
             {
-              path: '/ml-project/:project_id/:collection_id',
+              path: '/ml-project/:project_id/image_collection/:collection_id',
               name: 'Image Collection',
               hideInMenu: true,
               component: './ImageCollection',
+            },
+            {
+              path: '/ml-project/:project_id/video_collection/:video_id',
+              name: 'Video Detail',
+              hideInMenu: true,
+              component: './VideoDetail',
             },
             // {
             //   path: '/admin',
@@ -164,6 +171,7 @@ export default {
   theme: {
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
+    'menu-dark-bg': '#393e46',
   },
   define: {
     REACT_APP_ENV: REACT_APP_ENV || false,
