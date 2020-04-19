@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Collapse, Upload, Button, Divider, Modal, Select } from 'antd';
+import { Row, Col, Collapse, Upload, Button, Divider, Modal, Select, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import './index.less';
 
@@ -96,7 +96,20 @@ const AddImages = () => {
                       } else {
                         setLoadingFile(false);
                       }
-                      setFileList(fileList);
+                      const validateFileList = [];
+                      fileList.forEach(file => {
+                        if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                          validateFileList.push(file);
+                        }
+                      });
+                      setFileList(validateFileList);
+                    }}
+                    beforeUpload={file => {
+                      const isJPG = file.type === 'image/jpeg';
+                      const isPNG = file.type === 'image/png';
+                      if (!isJPG && !isPNG) message.error('Please upload JPG or PNG file');
+
+                      return isJPG || isPNG;
                     }}
                   >
                     <div>

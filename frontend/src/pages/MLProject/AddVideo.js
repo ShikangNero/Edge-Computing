@@ -116,7 +116,7 @@ const AddVideo = () => {
                 }}
                 onRemove={() => {
                   setFileList([]);
-                  // return false to prevent ant design original remove action, which will cause error since we modified fileList
+                  // return false to prevent ant design original remove action, which will cause error
                   return false;
                 }}
                 beforeUpload={file => {
