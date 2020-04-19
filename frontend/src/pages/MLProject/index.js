@@ -18,8 +18,8 @@ const SAMPLES = [
 ];
 
 const MLProject = props => {
-  const [samples, setsamples] = useState(SAMPLES);
-  const [init, setinit] = useState(false);
+  const [samples, setSamples] = useState(SAMPLES);
+  const [init, setInit] = useState(false);
   const {
     match: { params },
     ml: { videoAssets },
@@ -31,7 +31,7 @@ const MLProject = props => {
       dispatch({
         type: 'ml/getVideoAssets',
       });
-      setinit(true);
+      setInit(true);
     }
   });
 
@@ -63,7 +63,7 @@ const MLProject = props => {
                       if (curSample) {
                         curSample.name = newName;
                       }
-                      setsamples(copiedSamples);
+                      setSamples(copiedSamples);
                     }}
                     handleDeleteCollection={() => {
                       const copiedSamples = [...samples];
@@ -71,7 +71,7 @@ const MLProject = props => {
                         sample => sample.id === imgCollection.id,
                       );
                       copiedSamples.splice(curSampleIdx, 1);
-                      setsamples(copiedSamples);
+                      setSamples(copiedSamples);
                     }}
                   />
                 </Col>

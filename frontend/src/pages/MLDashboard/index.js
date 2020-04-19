@@ -6,8 +6,8 @@ import ProjectCard from './ProjectCard';
 import ModalCreateProject from './ModalCreateProject';
 
 const MLDashboard = props => {
-  const [createProjectVisible, setcreateProjectVisible] = useState(false);
-  const [init, setinit] = useState(false);
+  const [createProjectVisible, setCreateProjectVisible] = useState(false);
+  const [init, setInit] = useState(false);
   const {
     ml: { projects },
     dispatch,
@@ -18,7 +18,7 @@ const MLDashboard = props => {
       dispatch({
         type: 'ml/getProjects',
       });
-      setinit(true);
+      setInit(true);
     }
   });
   return (
@@ -35,7 +35,7 @@ const MLDashboard = props => {
               type="default"
               icon={<PlusOutlined />}
               style={{ marginLeft: 16 }}
-              onClick={() => setcreateProjectVisible(true)}
+              onClick={() => setCreateProjectVisible(true)}
             >
               Create Project
             </Button>
@@ -61,7 +61,7 @@ const MLDashboard = props => {
       </Row>
       <ModalCreateProject
         visible={createProjectVisible}
-        handleCloseModal={() => setcreateProjectVisible(false)}
+        handleCloseModal={() => setCreateProjectVisible(false)}
       />
     </Card>
   );

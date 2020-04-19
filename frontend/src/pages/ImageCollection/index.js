@@ -30,8 +30,8 @@ const FAKE_IMAGES = [
 ];
 
 const ImageCollection = () => {
-  const [previewVisible, setpreviewVisible] = useState(false);
-  const [previewImage, setpreviewImage] = useState('');
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
   // const [init, setinit] = useState(false);
   // const {
   //   ml: { imageAssets },
@@ -75,8 +75,8 @@ const ImageCollection = () => {
               <ImageCard
                 image={image}
                 handleOpenPreview={img => {
-                  setpreviewVisible(true);
-                  setpreviewImage(img);
+                  setPreviewVisible(true);
+                  setPreviewImage(img);
                 }}
               />
             </Col>
@@ -86,8 +86,8 @@ const ImageCollection = () => {
           visible={previewVisible}
           footer={null}
           onCancel={() => {
-            setpreviewImage('');
-            setpreviewVisible(false);
+            setPreviewImage('');
+            setPreviewVisible(false);
           }}
         >
           <img alt="example" style={{ width: '100%' }} src={previewImage} />

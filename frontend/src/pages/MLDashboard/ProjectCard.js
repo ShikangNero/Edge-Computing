@@ -5,7 +5,7 @@ import { ToolOutlined, DeleteOutlined } from '@ant-design/icons';
 import { typeColorPicker } from '@/utils/colorPicker';
 
 const ProjectCard = props => {
-  const [deleteVisible, setdeleteVisible] = useState(false);
+  const [deleteVisible, setDeleteVisible] = useState(false);
   const { project, handleDeleteProject } = props;
 
   return (
@@ -42,12 +42,12 @@ const ProjectCard = props => {
                   title="Confirm to delete this project?"
                   onCancel={e => {
                     e.stopPropagation();
-                    setdeleteVisible(false);
+                    setDeleteVisible(false);
                   }}
                   onConfirm={e => {
                     e.stopPropagation();
                     handleDeleteProject();
-                    setdeleteVisible(false);
+                    setDeleteVisible(false);
                   }}
                 >
                   <Button
@@ -56,7 +56,7 @@ const ProjectCard = props => {
                     icon={<DeleteOutlined style={{ color: 'red' }} />}
                     onClick={e => {
                       e.stopPropagation();
-                      setdeleteVisible(true);
+                      setDeleteVisible(true);
                     }}
                   />
                 </Popconfirm>

@@ -9,12 +9,12 @@ const { Option } = Select;
 const FAKE_OPTIONS = ['cat', 'dog', 'butterfly'];
 
 const AddImages = () => {
-  const [activeKey, setactiveKey] = useState(null);
-  const [previewVisible, setpreviewVisible] = useState(false);
-  const [fileList, setfileList] = useState([]);
-  const [previewImage, setpreviewImage] = useState('');
-  const [loadingFile, setloadingFile] = useState(false);
-  const [selectedCollection, setselectedCollection] = useState(null);
+  const [activeKey, setActiveKey] = useState(null);
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [fileList, setFileList] = useState([]);
+  const [previewImage, setPreviewImage] = useState('');
+  const [loadingFile, setLoadingFile] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState(null);
   function getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -30,8 +30,8 @@ const AddImages = () => {
       file.preview = await getBase64(file.originFileObj);
     }
 
-    setpreviewImage(file.url || file.preview);
-    setpreviewVisible(true);
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
   }
 
   // eslint-disable-next-line no-console
@@ -53,7 +53,7 @@ const AddImages = () => {
                   <Col span={24}>
                     <Button
                       style={{ position: 'relative', left: -40 }}
-                      onClick={() => setactiveKey(activeKey ? null : 'addImage')}
+                      onClick={() => setActiveKey(activeKey ? null : 'addImage')}
                     >
                       Add Images
                     </Button>
@@ -73,7 +73,7 @@ const AddImages = () => {
                     mode="tags"
                     style={{ width: 300 }}
                     placeholder="Please select a collection for your image(s)"
-                    onChange={value => setselectedCollection(value)}
+                    onChange={value => setSelectedCollection(value)}
                   >
                     {FAKE_OPTIONS.map(option => (
                       <Option key={option}>{option}</Option>
@@ -94,11 +94,11 @@ const AddImages = () => {
                       const curLoadingFile =
                         fileList && fileList.find(file => file.status === 'uploading');
                       if (curLoadingFile) {
-                        setloadingFile(true);
+                        setLoadingFile(true);
                       } else {
-                        setloadingFile(false);
+                        setLoadingFile(false);
                       }
-                      setfileList(fileList);
+                      setFileList(fileList);
                     }}
                   >
                     <div>
@@ -110,7 +110,7 @@ const AddImages = () => {
               </Row>
               <Row>
                 <Col span={24} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Button style={{ marginRight: 16 }} onClick={() => setactiveKey(null)}>
+                  <Button style={{ marginRight: 16 }} onClick={() => setActiveKey(null)}>
                     Cancel
                   </Button>
                   <Button
@@ -126,7 +126,7 @@ const AddImages = () => {
           </Collapse>
         </Col>
       </Row>
-      <Modal visible={previewVisible} footer={null} onCancel={() => setpreviewVisible(false)}>
+      <Modal visible={previewVisible} footer={null} onCancel={() => setPreviewVisible(false)}>
         <img alt="example" style={{ width: '100%' }} src={previewImage} />
       </Modal>
     </>
