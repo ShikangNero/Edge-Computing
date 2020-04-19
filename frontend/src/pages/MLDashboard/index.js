@@ -1,90 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'dva';
 import { Card, Row, Col, Typography, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import ModalCreateProject from './ModalCreateProject';
 
-// eslint-disable-next-line react/prefer-stateless-function
-class MLDashboard extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      createProjectVisible: false,
-      fakeProjects: [
-        {
-          id: '14zxcv78a8sd',
-          title: 'project 1',
-          description: 'this is a classification project',
-          type: 'Classification',
-          location: 'California / Santa Clara / San Jose',
-        },
-        {
-          id: '8zxva9df98zs90',
-          title: 'project 2',
-          description: 'this is a face detection project',
-          type: 'Detection',
-          location: 'California / Santa Clara / San Jose',
-        },
-        {
-          id: '8asx8d9ggs7s',
-          title: 'project 3',
-          description: 'this is a linear regression project',
-          type: 'Classification',
-          location: 'California / Santa Clara / San Jose',
-        },
-      ],
-    };
-  }
+const MLDashboard = props => {
+  const [createProjectVisible, setcreateProjectVisible] = useState(false);
+  const [init, setinit] = useState(false);
+  const {
+    ml: { projects },
+    dispatch,
+  } = props;
 
-  render() {
-    const { createProjectVisible, fakeProjects } = this.state;
-    return (
-      <Card
-        title={
-          <Row>
-            <Col
-              span={24}
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+  useEffect(() => {
+    if (!init) {
+      dispatch({
+        type: 'ml/getProjects',
+      });
+      setinit(true);
+    }
+  });
+  return (
+    <Card
+      title={
+        <Row>
+          <Col
+            span={24}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+          >
+            <Typography.Text>My Projects</Typography.Text>
+            {/* <Divider type="vertical" style={{ margin: '0 16px 0 24px', height: 24 }} /> */}
+            <Button
+              type="default"
+              icon={<PlusOutlined />}
+              style={{ marginLeft: 16 }}
+              onClick={() => setcreateProjectVisible(true)}
             >
-              <Typography.Text>My Projects</Typography.Text>
-              {/* <Divider type="vertical" style={{ margin: '0 16px 0 24px', height: 24 }} /> */}
-              <Button
-                type="default"
-                icon={<PlusOutlined />}
-                style={{ marginLeft: 16 }}
-                onClick={() => this.setState({ createProjectVisible: true })}
-              >
-                Create Project
-              </Button>
-            </Col>
-          </Row>
-        }
-      >
-        <Row gutter={[16, 16]}>
-          {fakeProjects &&
-            fakeProjects.map(project => (
-              <Col xs={24} md={12} lg={8}>
-                <ProjectCard
-                  project={project}
-                  handleDeleteProject={() => {
-                    const copiedProjects = [...fakeProjects];
-                    const curProjIdx = copiedProjects.findIndex(proj => proj.id === project.id);
-                    if (curProjIdx > -1) {
-                      copiedProjects.splice(curProjIdx, 1);
-                      this.setState({ fakeProjects: copiedProjects });
-                    }
-                  }}
-                />
-              </Col>
-            ))}
+              Create Project
+            </Button>
+          </Col>
         </Row>
-        <ModalCreateProject
-          visible={createProjectVisible}
-          handleCloseModal={() => this.setState({ createProjectVisible: false })}
-        />
-      </Card>
-    );
-  }
-}
+      }
+    >
+      <Row gutter={[16, 16]}>
+        {projects &&
+          projects.map(project => (
+            <Col xs={24} md={12} lg={8}>
+              <ProjectCard
+                project={project}
+                handleDeleteProject={() => {
+                  dispatch({
+                    type: 'ml/removeProject',
+                    id: project.id,
+                  });
+                }}
+              />
+            </Col>
+          ))}
+      </Row>
+      <ModalCreateProject
+        visible={createProjectVisible}
+        handleCloseModal={() => setcreateProjectVisible(false)}
+      />
+    </Card>
+  );
+};
 
-export default MLDashboard;
+export default connect(({ ml, loading }) => ({
+  ml,
+  loading,
+}))(MLDashboard);
