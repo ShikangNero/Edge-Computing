@@ -34,8 +34,6 @@ const AddImages = () => {
     setPreviewVisible(true);
   }
 
-  // eslint-disable-next-line no-console
-  console.log(selectedCollection);
   return (
     <>
       <Row>
@@ -115,7 +113,12 @@ const AddImages = () => {
                   </Button>
                   <Button
                     type="primary"
-                    disabled={(fileList && fileList.length === 0) || loadingFile}
+                    disabled={
+                      (fileList && fileList.length === 0) ||
+                      loadingFile ||
+                      !selectedCollection ||
+                      selectedCollection.length === 0
+                    }
                   >
                     Submit
                   </Button>

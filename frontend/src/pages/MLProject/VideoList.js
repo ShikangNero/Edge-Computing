@@ -9,6 +9,9 @@ const VideoList = props => {
   return (
     <List
       style={{ width: '100%' }}
+      pagination={{
+        pageSize: 10,
+      }}
       itemLayout="horizontal"
       dataSource={data || []}
       renderItem={item => (
