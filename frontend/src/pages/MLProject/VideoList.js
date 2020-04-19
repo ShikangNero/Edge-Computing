@@ -36,14 +36,36 @@ const VideoList = props => {
           </Row>
           <Dropdown
             placement="bottomRight"
+            trigger="click"
             overlay={
               <Menu>
-                <Menu.Item key="edit">Edit</Menu.Item>
-                <Menu.Item key="delete">Delete</Menu.Item>
+                <Menu.Item
+                  key="edit"
+                  onClick={value => {
+                    value.domEvent.stopPropagation();
+                  }}
+                >
+                  Edit
+                </Menu.Item>
+                <Menu.Item
+                  key="delete"
+                  onClick={value => {
+                    value.domEvent.stopPropagation();
+                  }}
+                >
+                  Delete
+                </Menu.Item>
               </Menu>
             }
           >
-            <Button type="link" icon={<EllipsisOutlined />} size="small" />
+            <Button
+              type="link"
+              icon={<EllipsisOutlined />}
+              size="small"
+              onClick={e => {
+                e.stopPropagation();
+              }}
+            />
           </Dropdown>
         </List.Item>
       )}
