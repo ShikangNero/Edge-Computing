@@ -22,12 +22,25 @@ class SecurityLayout extends React.Component {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  getCookie(name) {
+    const nameEQ = `${name}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i += 1) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
   render() {
     const { isReady } = this.state;
     const { children, loading, currentUser } = this.props; // You can replace it to your authentication rule (such as check token exists)
     // 你可以把它替换成你自己的登录认证规则（比如判断 token 是否存在）
 
-    const isLogin = currentUser && currentUser.userid;
+    // const isLogin = currentUser && currentUser.userid;
+    const isLogin = this.getCookie('token');
     const queryString = stringify({
       redirect: window.location.href,
     });

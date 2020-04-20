@@ -53,7 +53,7 @@ const checkStatus = response => {
  * @param  {object} [option] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default async function request(url, option) {
+export default function request(url, option) {
   // const user = await firebase.auth();
   // const idToken = user && user.currentUser && user.currentUser.getIdToken(/* forceRefresh */ true);
   // .then(idToken => {

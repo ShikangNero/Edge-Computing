@@ -1,5 +1,5 @@
 // import request from '@/utils/request';
-import axios from 'axios';
+// import axios from 'axios';
 import request from '@/utils/request';
 
 // export async function fakeAccountLogin(params) {
@@ -22,8 +22,10 @@ export async function login(params) {
       remember: true,
     },
   });
-  return response;
-
+  if (response.token) {
+    return { ...response, status: 'ok', type: 'account', currentAuthority: 'admin' };
+  }
+  return { ...response, status: 'error', type: 'account', currentAuthority: 'guest' };
   // axios
   //   .post(`${process.env.REACT_APP_API_URL}/users/auth/`, {
   //     username,
