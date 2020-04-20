@@ -2,7 +2,7 @@
 import slash from 'slash2';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 import themePluginConfig from './themePluginConfig';
-import proxy from './proxy';
+// import proxy from './proxy';
 import webpackPlugin from './plugin.config';
 
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
@@ -91,6 +91,11 @@ export default {
           name: 'login',
           path: '/user/login',
           component: './user/login',
+        },
+        {
+          name: 'register',
+          path: '/user/register',
+          component: './user/register',
         },
       ],
     },
@@ -211,6 +216,6 @@ export default {
   manifest: {
     basePath: '/',
   },
-  proxy: proxy[REACT_APP_ENV || 'dev'],
+  // proxy: proxy[REACT_APP_ENV || 'dev'],
   chainWebpack: webpackPlugin,
 };
