@@ -80,17 +80,6 @@ export default {
       });
     },
 
-    *getImageAssets(_, { put }) {
-      yield put({
-        type: 'setData',
-        imageAssets: [
-          { id: 1, name: 'cat' },
-          { id: 2, name: 'dog' },
-          { id: 3, name: 'butterfly' },
-        ],
-      });
-    },
-
     *updateImageAsset(payload, { put, select }) {
       const { id, name } = payload;
       const imageAssets = yield select(state => state.ml.imageAssets);

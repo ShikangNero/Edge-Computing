@@ -110,7 +110,6 @@ export default function request(url, option) {
       };
     }
   }
-
   const expirys = options.expirys && 60;
   // options.expirys !== false, return the cache,
   if (options.expirys !== false) {

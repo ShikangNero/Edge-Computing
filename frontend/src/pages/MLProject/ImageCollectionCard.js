@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Card, Input, Typography, Popconfirm, Tooltip } from 'antd';
+import { Row, Card, Input, Typography, Popconfirm, Tooltip, Badge } from 'antd';
 import { router } from 'umi';
 import { EditOutlined, DeleteOutlined, UndoOutlined } from '@ant-design/icons';
 
@@ -16,18 +16,25 @@ const ImageCollectionCard = props => {
       style={{ width: '100%' }}
       bodyStyle={{ padding: '12px 24px' }}
       cover={
-        <div
-          style={{ height: IMAGE_HEIGHT, width: '100%', cursor: 'pointer' }}
-          onClick={() => {
-            router.push(`/ml-project/${projectId}/image_collection/${imgCollection.id}`);
-          }}
+        <Badge
+          className="site-badge-count-109"
+          count={imgCollection.count}
+          style={{ backgroundColor: '#52c41a' }}
+          offset={[-18, 18]}
         >
-          <img
-            alt="example"
-            src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-            style={{ height: '100%', width: '100%', objectFit: 'cover' }}
-          />
-        </div>
+          <div
+            style={{ height: IMAGE_HEIGHT, width: '100%', cursor: 'pointer' }}
+            onClick={() => {
+              router.push(`/ml-project/${projectId}/image_collection/${imgCollection.id}`);
+            }}
+          >
+            <img
+              alt="example"
+              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              style={{ height: '100%', width: '100%', objectFit: 'cover' }}
+            />
+          </div>
+        </Badge>
       }
       actions={[
         editing ? (

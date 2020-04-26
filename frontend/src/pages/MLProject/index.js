@@ -3,11 +3,11 @@ import { connect } from 'dva';
 import { Card, Tabs, Typography, Row, Col, Tag } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { FileImageOutlined, VideoCameraOutlined, AppstoreOutlined } from '@ant-design/icons';
-import ImageCollectionCard from './ImageCollectionCard';
-import AddImages from './AddImages';
+import ImageSection from './ImageSection';
 import AddVideo from './AddVideo';
 import VideoList from './VideoList';
 import { typeColorPicker } from '@/utils/colorPicker';
+import { getCookie } from '@/utils/cookie';
 // import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -32,6 +32,13 @@ const MLProject = props => {
       dispatch({
         type: 'ml/getSingleProject',
         payload: {
+          projectId: params?.project_id,
+        },
+      });
+      dispatch({
+        type: 'image/getImageCollections',
+        payload: {
+          userId: getCookie('userId'),
           projectId: params?.project_id,
         },
       });
@@ -82,35 +89,7 @@ const MLProject = props => {
             }
             key="1"
           >
-            <AddImages />
-            <Row gutter={[16, 16]}>
-              {samples.map(imgCollection => (
-                <Col xs={24} sm={12} md={8} xl={6} key={imgCollection.id}>
-                  <ImageCollectionCard
-                    projectId={params && params.project_id}
-                    imgCollection={imgCollection}
-                    handleChangeName={newName => {
-                      const copiedSamples = [...samples];
-                      const curSample = copiedSamples.find(
-                        sample => sample.id === imgCollection.id,
-                      );
-                      if (curSample) {
-                        curSample.name = newName;
-                      }
-                      setSamples(copiedSamples);
-                    }}
-                    handleDeleteCollection={() => {
-                      const copiedSamples = [...samples];
-                      const curSampleIdx = copiedSamples.findIndex(
-                        sample => sample.id === imgCollection.id,
-                      );
-                      copiedSamples.splice(curSampleIdx, 1);
-                      setSamples(copiedSamples);
-                    }}
-                  />
-                </Col>
-              ))}
-            </Row>
+            <ImageSection projectId={params?.project_id} />
           </TabPane>
           <TabPane
             tab={
@@ -141,7 +120,8 @@ const MLProject = props => {
   );
 };
 
-export default connect(({ ml, loading }) => ({
+export default connect(({ ml, image, loading }) => ({
   ml,
+  image,
   loading,
 }))(MLProject);

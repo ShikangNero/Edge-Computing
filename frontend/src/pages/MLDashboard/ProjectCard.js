@@ -11,8 +11,10 @@ const ProjectCard = props => {
   const { project, dispatch } = props;
 
   return (
-    <Card hoverable style={{ height: '100%', width: '100%', cursor: 'auto' }}>
+    <Card hoverable style={{ width: '100%', cursor: 'auto' }} bodyStyle={{ height: 200 }}>
       <Descriptions
+        className="projectCardDescription"
+        style={{ height: '100%' }}
         title={
           <Row>
             <Col span={20} style={{ display: 'flex', alignItems: 'center' }}>
@@ -114,8 +116,14 @@ const ProjectCard = props => {
           </Row>
         }
       >
-        <Descriptions.Item label="Description" span={3}>
-          <Typography.Text type="secondary">{project.description}</Typography.Text>
+        <Descriptions.Item label="Description" span={3} style={{ overflow: 'scroll' }}>
+          <Typography.Paragraph
+            type="secondary"
+            ellipsis={{ rows: 2, expandable: true }}
+            style={{ margin: 0 }}
+          >
+            {project.description}
+          </Typography.Paragraph>
         </Descriptions.Item>
         <Descriptions.Item label="Location" span={3}>
           <Typography.Text type="secondary">{project.location}</Typography.Text>

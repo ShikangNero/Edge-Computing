@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
 import { Row, Col, Collapse, Upload, Button, Divider, Modal, Select, message } from 'antd';
+import { connect } from 'dva';
 import { PlusOutlined } from '@ant-design/icons';
 import './index.less';
+import { getCookie } from '@/utils/cookie';
 
 const { Panel } = Collapse;
 const { Option } = Select;
 
 const FAKE_OPTIONS = ['cat', 'dog', 'butterfly'];
 
-const AddImages = () => {
+const AddImages = props => {
   const [activeKey, setActiveKey] = useState(null);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [loadingFile, setLoadingFile] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState(null);
+  const [loading, setLoading] = useState([false]);
+
+  // monitor loading status for all post request in the for loop
+  let hadLoading = false;
+  loading.forEach(isloading => {
+    hadLoading = hadLoading || isloading;
+  });
+
+  const {
+    dispatch,
+    image: { collections },
+    projectId,
+  } = props;
+
   function getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -73,8 +89,8 @@ const AddImages = () => {
                     placeholder="Please select a collection for your image(s)"
                     onChange={value => setSelectedCollection(value)}
                   >
-                    {FAKE_OPTIONS.map(option => (
-                      <Option key={option}>{option}</Option>
+                    {collections.map(option => (
+                      <Option key={option.name}>{option.name}</Option>
                     ))}
                   </Select>
                 </Col>
@@ -132,6 +148,29 @@ const AddImages = () => {
                       !selectedCollection ||
                       selectedCollection.length === 0
                     }
+                    loading={hadLoading}
+                    onClick={async () => {
+                      setLoading(selectedCollection.map(() => true));
+                      selectedCollection.forEach((curCollection, idx) => {
+                        const formData = new FormData();
+                        const uploadImages = fileList?.map(item => item.originFileObj) || [];
+                        uploadImages.forEach(image => formData.append('files', image));
+                        formData.append('type', curCollection);
+                        dispatch({
+                          type: 'image/uploadImages',
+                          payload: {
+                            projectId,
+                            userId: getCookie('userId'),
+                            formData,
+                            type: curCollection,
+                          },
+                        }).then(() => {
+                          loading[idx] = false;
+                          setLoading(loading);
+                        });
+                      });
+                      setFileList([]);
+                    }}
                   >
                     Submit
                   </Button>
@@ -149,4 +188,7 @@ const AddImages = () => {
   );
 };
 
-export default AddImages;
+export default connect(({ ml, image }) => ({
+  ml,
+  image,
+}))(AddImages);
