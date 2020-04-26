@@ -16,7 +16,7 @@ const AddImages = props => {
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [loadingFile, setLoadingFile] = useState(false);
-  const [selectedCollection, setSelectedCollection] = useState(null);
+  const [selectedCollection, setSelectedCollection] = useState([]);
   const [loading, setLoading] = useState([false]);
 
   // monitor loading status for all post request in the for loop
@@ -85,6 +85,7 @@ const AddImages = props => {
                 <Col span={24}>
                   <Select
                     mode="tags"
+                    value={selectedCollection}
                     style={{ width: 300 }}
                     placeholder="Please select a collection for your image(s)"
                     onChange={value => setSelectedCollection(value)}
@@ -170,6 +171,7 @@ const AddImages = props => {
                         });
                       });
                       setFileList([]);
+                      setSelectedCollection([]);
                     }}
                   >
                     Submit

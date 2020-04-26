@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { connect } from 'dva';
 import { Row, Card, Input, Typography, Popconfirm, Tooltip, Badge } from 'antd';
 import { router } from 'umi';
 import { EditOutlined, DeleteOutlined, UndoOutlined } from '@ant-design/icons';
+import { getCookie } from '@/utils/cookie';
 
 const { Meta } = Card;
 const IMAGE_HEIGHT = 150;
@@ -11,6 +13,9 @@ const ImageCollectionCard = props => {
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(null);
   const initialName = (imgCollection && imgCollection.name) || '';
+
+  const { dispatch } = props;
+
   return (
     <Card
       style={{ width: '100%' }}
@@ -25,7 +30,7 @@ const ImageCollectionCard = props => {
           <div
             style={{ height: IMAGE_HEIGHT, width: '100%', cursor: 'pointer' }}
             onClick={() => {
-              router.push(`/ml-project/${projectId}/image_collection/${imgCollection.id}`);
+              router.push(`/ml-project/${projectId}/image_collection/${imgCollection.name}`);
             }}
           >
             <img
@@ -59,7 +64,19 @@ const ImageCollectionCard = props => {
             }}
           />
         ),
-        <Popconfirm title="Confirm to delete this collection?" onConfirm={handleDeleteCollection}>
+        <Popconfirm
+          title="Confirm to delete this collection?"
+          onConfirm={() => {
+            dispatch({
+              type: 'image/removeCollection',
+              payload: {
+                type: imgCollection?.name,
+                userId: getCookie('userId'),
+                projectId,
+              },
+            });
+          }}
+        >
           <DeleteOutlined
             key="delete"
             style={{ color: 'red' }}
@@ -84,7 +101,17 @@ const ImageCollectionCard = props => {
                 }}
                 onPressEnter={() => {
                   if (editName) {
-                    handleChangeName(editName);
+                    dispatch({
+                      type: 'image/updateCollectionName',
+                      payload: {
+                        userId: getCookie('userId'),
+                        projectId,
+                        oldType: imgCollection?.name,
+                        newType: editName,
+                      },
+                    });
+
+                    // handleChangeName(editName);
                   }
                   setEditing(false);
                   setEditName(null);
@@ -102,4 +129,7 @@ const ImageCollectionCard = props => {
   );
 };
 
-export default ImageCollectionCard;
+export default connect(({ ml, image }) => ({
+  ml,
+  image,
+}))(ImageCollectionCard);

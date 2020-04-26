@@ -31,13 +31,13 @@ const ImageSection = props => {
       <AddImages projectId={projectId} />
       <Row gutter={[16, 16]}>
         {collections.map(imgCollection => (
-          <Col xs={24} sm={12} md={8} xl={6} key={imgCollection.id}>
+          <Col xs={24} sm={12} md={8} xl={6} key={imgCollection.name}>
             <ImageCollectionCard
               projectId={projectId}
               imgCollection={imgCollection}
               handleChangeName={newName => {
                 // const copiedSamples = [...samples];
-                // const curSample = copiedSamples.find(sample => sample.id === imgCollection.id);
+                // const curSample = copiedSamples.find(sample => sample.id === imgCollection.name);
                 // if (curSample) {
                 //   curSample.name = newName;
                 // }
@@ -46,7 +46,7 @@ const ImageSection = props => {
               handleDeleteCollection={() => {
                 // const copiedSamples = [...samples];
                 // const curSampleIdx = copiedSamples.findIndex(
-                //   sample => sample.id === imgCollection.id,
+                //   sample => sample.id === imgCollection.name,
                 // );
                 // copiedSamples.splice(curSampleIdx, 1);
                 // setSamples(copiedSamples);

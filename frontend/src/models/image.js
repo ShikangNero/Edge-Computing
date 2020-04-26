@@ -1,4 +1,4 @@
-import { getCollections, addImages } from '@/services/image';
+import { getCollections, addImages, updateCollection, deleteCollection } from '@/services/image';
 
 export default {
   namespace: 'image',
@@ -38,6 +38,34 @@ export default {
         type: 'setData',
         collections,
       });
+    },
+
+    *updateCollectionName({ payload }, { call, put, select }) {
+      const response = yield call(updateCollection, payload);
+      const collections = yield select(state => state.image.collections);
+      const { oldType, newType } = payload;
+      const curCollection = collections.find(collection => collection.name === oldType);
+      if (curCollection) {
+        curCollection.name = newType;
+        yield put({
+          type: 'setData',
+          collections,
+        });
+      }
+    },
+
+    *removeCollection({ payload }, { call, put, select }) {
+      const response = yield call(deleteCollection, payload);
+      const collections = yield select(state => state.image.collections);
+      const { type } = payload;
+      const curIdx = collections.findIndex(collection => collection.name === type);
+      if (curIdx > -1) {
+        collections.splice(curIdx, 1);
+        yield put({
+          type: 'setData',
+          collections,
+        });
+      }
     },
   },
 

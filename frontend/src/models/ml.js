@@ -30,7 +30,6 @@ export default {
 
   state: {
     projects: [],
-    imageAssets: [],
     videoAssets: [],
     video: null,
     project: null,
@@ -77,17 +76,6 @@ export default {
       yield put({
         type: 'setData',
         projects,
-      });
-    },
-
-    *updateImageAsset(payload, { put, select }) {
-      const { id, name } = payload;
-      const imageAssets = yield select(state => state.ml.imageAssets);
-      const updateImage = imageAssets?.find(image => image.id === id);
-      updateImage.name = name;
-      yield put({
-        type: 'setData',
-        imageAssets,
       });
     },
 

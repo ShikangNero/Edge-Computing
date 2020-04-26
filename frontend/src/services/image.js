@@ -27,13 +27,14 @@ export async function addImages(params) {
 }
 
 export async function updateCollection(params) {
-  const { userId, projectId, type, newType } = params;
+  const { userId, projectId, oldType, newType } = params;
   const response = await request(
-    `http://localhost:8000/images/${type}?user_id=${userId}&project_id=${projectId}&type=${newType}`,
+    `http://localhost:8000/images/${oldType}?user_id=${userId}&project_id=${projectId}&type=${newType}`,
     {
       method: 'PUT',
     },
   );
+  console.log('change collection name', response);
   return response;
 }
 
@@ -45,6 +46,7 @@ export async function deleteCollection(params) {
       method: 'DELETE',
     },
   );
+  console.log('delete collection', response);
   return response;
 }
 
