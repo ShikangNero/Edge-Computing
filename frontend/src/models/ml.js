@@ -1,6 +1,11 @@
 import moment from 'moment';
-import { getProjectByAccount, addProject } from '../services/projects';
 import { message } from 'antd';
+import {
+  getProjectByAccount,
+  addProject,
+  deleteProject,
+  getProjectDetail,
+} from '../services/projects';
 
 const FAKE_VIDEOS = [
   {
@@ -28,6 +33,7 @@ export default {
     imageAssets: [],
     videoAssets: [],
     video: null,
+    project: null,
   },
 
   effects: {
@@ -37,32 +43,6 @@ export default {
         type: 'setData',
         projects: response,
       });
-      // yield put({
-      //   type: 'setData',
-      //   projects: [
-      //     {
-      //       id: '14zxcv78a8sd',
-      //       title: 'project 1',
-      //       description: 'this is a classification project',
-      //       type: 'Classification',
-      //       location: 'California / Santa Clara / San Jose',
-      //     },
-      //     {
-      //       id: '8zxva9df98zs90',
-      //       title: 'project 2',
-      //       description: 'this is a face detection project',
-      //       type: 'Detection',
-      //       location: 'California / Santa Clara / San Jose',
-      //     },
-      //     {
-      //       id: '8asx8d9ggs7s',
-      //       title: 'project 3',
-      //       description: 'this is a linear regression project',
-      //       type: 'Classification',
-      //       location: 'California / Santa Clara / San Jose',
-      //     },
-      //   ],
-      // });
     },
 
     *createProject({ payload }, { call, put, select }) {
@@ -76,14 +56,21 @@ export default {
           projects,
         });
       }
-
-      // console.log(response);
     },
 
-    *removeProject(payload, { put, select }) {
-      const { id } = payload;
+    *getSingleProject({ payload }, { call, put }) {
+      const response = yield call(getProjectDetail, payload);
+      yield put({
+        type: 'setData',
+        project: response,
+      });
+    },
+
+    *removeProject({ payload }, { call, put, select }) {
+      const { projectId } = payload;
+      const response = yield call(deleteProject, payload);
       const projects = yield select(state => state.ml.projects);
-      const removeProjectIdx = projects.findIndex(project => project.id === id);
+      const removeProjectIdx = projects.findIndex(project => project.id === projectId);
       if (removeProjectIdx > -1) {
         projects.splice(removeProjectIdx, 1);
       }

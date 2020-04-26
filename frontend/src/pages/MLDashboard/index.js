@@ -53,15 +53,7 @@ const MLDashboard = props => {
         {projects &&
           projects.map(project => (
             <Col xs={24} md={12} lg={8} key={project.id}>
-              <ProjectCard
-                project={project}
-                handleDeleteProject={() => {
-                  dispatch({
-                    type: 'ml/removeProject',
-                    id: project.id,
-                  });
-                }}
-              />
+              <ProjectCard project={project} />
             </Col>
           ))}
       </Row>

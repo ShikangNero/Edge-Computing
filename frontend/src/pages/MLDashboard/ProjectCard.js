@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
+import { connect } from 'dva';
 import { Card, Descriptions, Row, Col, Typography, Tag, Button, Alert, Dropdown, Menu } from 'antd';
 import { router } from 'umi';
-import { MoreOutlined, DeleteOutlined } from '@ant-design/icons';
+import { MoreOutlined } from '@ant-design/icons';
 import { typeColorPicker } from '@/utils/colorPicker';
 
 const ProjectCard = props => {
   const [deleteVisible, setDeleteVisible] = useState(false);
-  const { project, handleDeleteProject } = props;
+  const [loading, setLoading] = useState(false);
+  const { project, dispatch } = props;
 
   return (
-    <Card hoverable style={{ height: '100%', width: '100%' }}>
+    <Card hoverable style={{ height: '100%', width: '100%', cursor: 'auto' }}>
       <Descriptions
         title={
           <Row>
             <Col span={20} style={{ display: 'flex', alignItems: 'center' }}>
               <Typography.Text strong style={{ fontSize: 16 }}>
                 <span
-                  style={{ marginRight: 12 }}
+                  style={{ marginRight: 12, cursor: 'pointer' }}
                   onClick={() => {
                     router.push(`ml-project/${project.id}`);
                   }}
@@ -44,6 +46,7 @@ const ProjectCard = props => {
                       </Row>
                       <Row justify="end" style={{ padding: '4px 8px' }}>
                         <Button
+                          loading={loading}
                           size="small"
                           onClick={e => {
                             e.stopPropagation();
@@ -54,10 +57,17 @@ const ProjectCard = props => {
                           Cancel
                         </Button>
                         <Button
+                          loading={loading}
                           size="small"
                           onClick={e => {
                             e.stopPropagation();
-                            handleDeleteProject();
+                            setLoading(true);
+                            dispatch({
+                              type: 'ml/removeProject',
+                              payload: {
+                                projectId: project.id,
+                              },
+                            }).then(() => setLoading(false));
                             setDeleteVisible(false);
                           }}
                         >
@@ -79,20 +89,6 @@ const ProjectCard = props => {
                         </Button>
                       </Menu.Item>
                       <Menu.Item>
-                        {/* <Popconfirm
-                        placement="left"
-                        visible={deleteVisible}
-                        title="Confirm to delete this project?"
-                        onCancel={e => {
-                          e.stopPropagation();
-                          setDeleteVisible(false);
-                        }}
-                        onConfirm={e => {
-                          e.stopPropagation();
-                          handleDeleteProject();
-                          setDeleteVisible(false);
-                        }}
-                      > */}
                         <Button
                           type="link"
                           size="small"
@@ -103,7 +99,6 @@ const ProjectCard = props => {
                         >
                           Delete
                         </Button>
-                        {/* </Popconfirm> */}
                       </Menu.Item>
                     </Menu>
                   )
@@ -119,23 +114,10 @@ const ProjectCard = props => {
           </Row>
         }
       >
-        {/* <Descriptions.Item label="Type" span={3}>
-              <Typography.Text type="secondary">{project.type}</Typography.Text>
-            </Descriptions.Item> */}
         <Descriptions.Item label="Description" span={3}>
           <Typography.Text type="secondary">{project.description}</Typography.Text>
         </Descriptions.Item>
-        <Descriptions.Item
-          label="Location"
-          //   {
-
-          //     <Typography.Text>
-          //       <GlobalOutlined style={{ marginRight: 8 }} />
-          //       Location
-          //     </Typography.Text>
-          //   }
-          span={3}
-        >
+        <Descriptions.Item label="Location" span={3}>
           <Typography.Text type="secondary">{project.location}</Typography.Text>
         </Descriptions.Item>
       </Descriptions>
@@ -143,4 +125,6 @@ const ProjectCard = props => {
   );
 };
 
-export default ProjectCard;
+export default connect(({ ml }) => ({
+  ml,
+}))(ProjectCard);
