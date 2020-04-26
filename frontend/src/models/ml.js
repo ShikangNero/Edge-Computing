@@ -1,4 +1,6 @@
 import moment from 'moment';
+import { getProjectByAccount, addProject } from '../services/projects';
+import { message } from 'antd';
 
 const FAKE_VIDEOS = [
   {
@@ -29,33 +31,53 @@ export default {
   },
 
   effects: {
-    *getProjects(_, { put }) {
+    *getProjects({ payload }, { call, put }) {
+      const response = yield call(getProjectByAccount, payload);
       yield put({
         type: 'setData',
-        projects: [
-          {
-            id: '14zxcv78a8sd',
-            title: 'project 1',
-            description: 'this is a classification project',
-            type: 'Classification',
-            location: 'California / Santa Clara / San Jose',
-          },
-          {
-            id: '8zxva9df98zs90',
-            title: 'project 2',
-            description: 'this is a face detection project',
-            type: 'Detection',
-            location: 'California / Santa Clara / San Jose',
-          },
-          {
-            id: '8asx8d9ggs7s',
-            title: 'project 3',
-            description: 'this is a linear regression project',
-            type: 'Classification',
-            location: 'California / Santa Clara / San Jose',
-          },
-        ],
+        projects: response,
       });
+      // yield put({
+      //   type: 'setData',
+      //   projects: [
+      //     {
+      //       id: '14zxcv78a8sd',
+      //       title: 'project 1',
+      //       description: 'this is a classification project',
+      //       type: 'Classification',
+      //       location: 'California / Santa Clara / San Jose',
+      //     },
+      //     {
+      //       id: '8zxva9df98zs90',
+      //       title: 'project 2',
+      //       description: 'this is a face detection project',
+      //       type: 'Detection',
+      //       location: 'California / Santa Clara / San Jose',
+      //     },
+      //     {
+      //       id: '8asx8d9ggs7s',
+      //       title: 'project 3',
+      //       description: 'this is a linear regression project',
+      //       type: 'Classification',
+      //       location: 'California / Santa Clara / San Jose',
+      //     },
+      //   ],
+      // });
+    },
+
+    *createProject({ payload }, { call, put, select }) {
+      const response = yield call(addProject, payload);
+      if (response && response !== undefined && response.id) {
+        message.success('Successfully added your new project');
+        let projects = yield select(state => state.ml.projects);
+        projects = [...projects, response];
+        yield put({
+          type: 'setData',
+          projects,
+        });
+      }
+
+      // console.log(response);
     },
 
     *removeProject(payload, { put, select }) {

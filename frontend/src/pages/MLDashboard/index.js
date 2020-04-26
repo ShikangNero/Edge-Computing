@@ -4,6 +4,7 @@ import { Card, Row, Col, Typography, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import ModalCreateProject from './ModalCreateProject';
+import { getCookie } from '@/utils/cookie';
 
 const MLDashboard = props => {
   const [createProjectVisible, setCreateProjectVisible] = useState(false);
@@ -14,9 +15,14 @@ const MLDashboard = props => {
   } = props;
 
   useEffect(() => {
+    // console.log(getCookie('token'));
+    // console.log(getCookie('userId'))
     if (!init) {
       dispatch({
         type: 'ml/getProjects',
+        payload: {
+          userId: getCookie('userId'),
+        },
       });
       setInit(true);
     }

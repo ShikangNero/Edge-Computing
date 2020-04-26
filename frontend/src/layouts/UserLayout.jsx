@@ -44,14 +44,14 @@ const UserLayout = props => {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
+                <span className={styles.title}>IEdge</span>
               </Link>
             </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            <div className={styles.desc}>Remote AI Edge Control System</div>
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        <DefaultFooter copyright="CMPE 295B Master Project" links={[]} />
       </div>
     </>
   );
