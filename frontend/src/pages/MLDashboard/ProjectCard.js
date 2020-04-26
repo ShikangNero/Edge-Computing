@@ -16,7 +16,7 @@ const ProjectCard = props => {
         className="projectCardDescription"
         style={{ height: '100%' }}
         title={
-          <Row>
+          <Row align="middle">
             <Col span={20} style={{ display: 'flex', alignItems: 'center' }}>
               <Typography.Text strong style={{ fontSize: 16 }}>
                 <span
@@ -106,7 +106,10 @@ const ProjectCard = props => {
                   )
                 }
               >
-                <MoreOutlined
+                <Button
+                  type="link"
+                  size="small"
+                  icon={<MoreOutlined />}
                   onClick={e => {
                     e.stopPropagation();
                   }}

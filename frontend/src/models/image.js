@@ -1,4 +1,12 @@
-import { getCollections, addImages, updateCollection, deleteCollection } from '@/services/image';
+import {
+  getCollections,
+  addImages,
+  updateCollection,
+  deleteCollection,
+  getImageByCollection,
+  deleteImage,
+  updateImageCollection,
+} from '@/services/image';
 
 export default {
   namespace: 'image',
@@ -12,13 +20,13 @@ export default {
     *getImageCollections({ payload }, { call, put }) {
       const response = yield call(getCollections, payload);
       if (response && response !== undefined) {
-        const collectionArr = Object.keys(response).map(key => ({
-          name: key,
-          count: response[key],
-        }));
+        // const collectionArr = Object.keys(response).map(key => ({
+        //   name: key,
+        //   count: response[key],
+        // }));
         yield put({
           type: 'setData',
-          collections: collectionArr,
+          collections: response,
         });
       }
     },
@@ -66,6 +74,42 @@ export default {
           collections,
         });
       }
+    },
+
+    *fetchImageByCollection({ payload }, { call, put }) {
+      const response = yield call(getImageByCollection, payload);
+      yield put({
+        type: 'setData',
+        images: response,
+      });
+    },
+
+    *removeImage({ payload }, { call, put, select }) {
+      const response = yield call(deleteImage, payload);
+      const images = yield select(state => state.image.images);
+      const { imageId } = payload;
+      const curIdx = images.findIndex(image => image.id === imageId);
+      if (curIdx > -1) {
+        images.splice(curIdx, 1);
+      }
+      yield put({
+        type: 'setData',
+        images,
+      });
+    },
+
+    *changeImageCollection({ payload }, { call, put, select }) {
+      const response = yield call(updateImageCollection, payload);
+      const images = yield select(state => state.image.images);
+      const { imageId } = payload;
+      const curIdx = images.findIndex(image => image.id === imageId);
+      if (curIdx > -1) {
+        images.splice(curIdx, 1);
+      }
+      yield put({
+        type: 'setData',
+        images,
+      });
     },
   },
 

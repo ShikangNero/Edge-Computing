@@ -32,26 +32,7 @@ const ImageSection = props => {
       <Row gutter={[16, 16]}>
         {collections.map(imgCollection => (
           <Col xs={24} sm={12} md={8} xl={6} key={imgCollection.name}>
-            <ImageCollectionCard
-              projectId={projectId}
-              imgCollection={imgCollection}
-              handleChangeName={newName => {
-                // const copiedSamples = [...samples];
-                // const curSample = copiedSamples.find(sample => sample.id === imgCollection.name);
-                // if (curSample) {
-                //   curSample.name = newName;
-                // }
-                // setSamples(copiedSamples);
-              }}
-              handleDeleteCollection={() => {
-                // const copiedSamples = [...samples];
-                // const curSampleIdx = copiedSamples.findIndex(
-                //   sample => sample.id === imgCollection.name,
-                // );
-                // copiedSamples.splice(curSampleIdx, 1);
-                // setSamples(copiedSamples);
-              }}
-            />
+            <ImageCollectionCard projectId={projectId} imgCollection={imgCollection} />
           </Col>
         ))}
       </Row>

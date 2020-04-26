@@ -12,14 +12,7 @@ import { getCookie } from '@/utils/cookie';
 
 const { TabPane } = Tabs;
 
-const SAMPLES = [
-  { id: 'sdafdsao12', name: 'cat' },
-  { id: '1254njh98', name: 'dog' },
-  { id: 'fasdho330', name: 'butterfly' },
-];
-
 const MLProject = props => {
-  const [samples, setSamples] = useState(SAMPLES);
   const [init, setInit] = useState(false);
   const {
     match: { params },

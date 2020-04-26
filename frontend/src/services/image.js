@@ -58,6 +58,7 @@ export async function getImageByCollection(params) {
       method: 'GET',
     },
   );
+  console.log('get collection images', response);
   return response;
 }
 
@@ -74,6 +75,7 @@ export async function deleteImage(params) {
   const response = await request(`http://localhost:8000/images/${imageId}`, {
     method: 'DELETE',
   });
+  console.log('delete image', response);
   return response;
 }
 
@@ -82,6 +84,7 @@ export async function updateImageCollection(params) {
   const response = await request(`http://localhost:8000/images/${imageId}?type=${type}`, {
     method: 'PUT',
   });
+  console.log('update image collection', response);
   return response;
 }
 

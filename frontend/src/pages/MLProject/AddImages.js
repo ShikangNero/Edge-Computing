@@ -8,8 +8,6 @@ import { getCookie } from '@/utils/cookie';
 const { Panel } = Collapse;
 const { Option } = Select;
 
-const FAKE_OPTIONS = ['cat', 'dog', 'butterfly'];
-
 const AddImages = props => {
   const [activeKey, setActiveKey] = useState(null);
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -77,11 +75,6 @@ const AddImages = props => {
               key="addImage"
             >
               <Row style={{ marginBottom: 24 }} gutter={[8, 8]}>
-                {/* <Col span={24}>
-                  <Typography.Text type="secondary">
-                   
-                  </Typography.Text>
-                </Col> */}
                 <Col span={24}>
                   <Select
                     mode="tags"

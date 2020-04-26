@@ -40,3 +40,15 @@ export async function getProjectDetail(params) {
   console.log('get project detail', response);
   return response;
 }
+
+export async function updateProjectDescription(params) {
+  const { projectId, description } = params;
+  const response = await request(
+    `http://localhost:8000/projects/${projectId}?description=${description}`,
+    {
+      method: 'PUT',
+    },
+  );
+  console.log('update project description', response);
+  return response;
+}

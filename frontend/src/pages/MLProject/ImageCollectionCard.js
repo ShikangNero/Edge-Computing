@@ -9,7 +9,7 @@ const { Meta } = Card;
 const IMAGE_HEIGHT = 150;
 
 const ImageCollectionCard = props => {
-  const { projectId, imgCollection, handleChangeName, handleDeleteCollection } = props;
+  const { projectId, imgCollection } = props;
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(null);
   const initialName = (imgCollection && imgCollection.name) || '';
@@ -22,9 +22,9 @@ const ImageCollectionCard = props => {
       bodyStyle={{ padding: '12px 24px' }}
       cover={
         <Badge
-          className="site-badge-count-109"
+          // className="site-badge-count-109"
           count={imgCollection.count}
-          style={{ backgroundColor: '#52c41a' }}
+          style={{ backgroundColor: '#393e46', color: 'white', boxShadow: ' 0 0 0 1px white' }}
           offset={[-18, 18]}
         >
           <div
@@ -35,7 +35,7 @@ const ImageCollectionCard = props => {
           >
             <img
               alt="example"
-              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              src={imgCollection?.avatarImage?.url}
               style={{ height: '100%', width: '100%', objectFit: 'cover' }}
             />
           </div>

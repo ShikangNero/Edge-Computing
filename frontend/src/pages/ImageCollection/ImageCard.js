@@ -11,10 +11,10 @@ const ImageCard = props => {
       bordered={false}
       hoverable
       bodyStyle={{ padding: 0 }}
-      onClick={() => handleOpenPreview(image.src || '')}
+      onClick={() => handleOpenPreview(image)}
     >
       <Avatar
-        src={image.src}
+        src={image?.url}
         icon={<UserOutlined />}
         shape="square"
         style={{ width: '100%', height: IMAGE_HEIGHT }}
