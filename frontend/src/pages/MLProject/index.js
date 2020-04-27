@@ -4,8 +4,8 @@ import { Card, Tabs, Typography, Row, Col, Tag } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { FileImageOutlined, VideoCameraOutlined, AppstoreOutlined } from '@ant-design/icons';
 import ImageSection from './ImageSection';
-import AddVideo from './AddVideo';
-import VideoList from './VideoList';
+import VideoSection from './VideoSection';
+import ModelSection from './ModelSection';
 import { typeColorPicker } from '@/utils/colorPicker';
 import { getCookie } from '@/utils/cookie';
 // import styles from './index.less';
@@ -92,10 +92,7 @@ const MLProject = props => {
             }
             key="2"
           >
-            <AddVideo />
-            <Row>
-              <VideoList data={videoAssets} projectId={params && params.project_id} />
-            </Row>
+            <VideoSection projectId={params?.project_id} />
           </TabPane>
           <TabPane
             tab={
@@ -105,7 +102,7 @@ const MLProject = props => {
             }
             key="3"
           >
-            Models
+            <ModelSection projectId={params?.project_id} />
           </TabPane>
         </Tabs>
       </Card>

@@ -10,6 +10,7 @@ export async function login(params) {
       remember: true,
     },
   });
+  console.log('login', response);
   if (response && response !== undefined && response.token) {
     return { ...response, status: 'ok', type: 'account', currentAuthority: 'admin' };
   }

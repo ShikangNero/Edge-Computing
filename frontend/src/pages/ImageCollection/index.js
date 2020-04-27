@@ -309,7 +309,7 @@ const ImageCollection = props => {
           bodyStyle={{ padding: 0 }}
           style={{ minWidth: 400 }}
         >
-          <img alt="example" style={{ width: '100%' }} src={previewImage?.url} />
+          <img alt="example" style={{ width: '100%', marginBottom: 50 }} src={previewImage?.url} />
         </Modal>
       </Card>
     </PageHeaderWrapper>

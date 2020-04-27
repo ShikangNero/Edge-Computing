@@ -8,41 +8,34 @@ export async function getModelsByProject(params) {
       method: 'GET',
     },
   );
+  console.log('get models', response);
   return response;
 }
 
 export async function uploadModel(params) {
-  const { userId, projectId, type, files, description, title } = params;
+  const { userId, projectId, formData } = params;
   const response = await request(
     `http://localhost:8000/models/all?user_id=${userId}&project_id=${projectId}&method=upload`,
     {
       method: 'POST',
-      body: {
-        title,
-        description,
-        type, // model type
-        files, // files[0]: h5, files[1]: txt label
-      },
+      body: formData,
     },
   );
+  console.log('upload new model', response);
   return response;
 }
 
 export async function createModel(params) {
   // PRIMARY
-  const { userId, projectId, type, files, description, title } = params;
+  const { userId, projectId, formData } = params;
   const response = await request(
     `http://localhost:8000/models/all?user_id=${userId}&project_id=${projectId}&method=create`,
     {
       method: 'POST',
-      body: {
-        title,
-        description,
-        type, // model type
-        files, // list. python file
-      },
+      body: formData,
     },
   );
+  console.log('create new model', response);
   return response;
 }
 
@@ -51,5 +44,6 @@ export async function deleteModel(params) {
   const response = await request(`http://localhost:8000/models/${modelId} `, {
     method: 'DELETE',
   });
+  console.log('delete model', response);
   return response;
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'dva';
 import {
   Col,
   Row,
@@ -12,17 +13,20 @@ import {
   message,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { getCookie } from '@/utils/cookie';
 
 const { Panel } = Collapse;
 const { Option } = Select;
 
-const AddVideo = () => {
+const AddVideo = props => {
   const [activeKey, setActiveKey] = useState(null);
   const [loadingFile, setLoadingFile] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [selectedModel, setSelectedModel] = useState('');
   const [interval, setInterval] = useState(100);
+  const [loading, setLoading] = useState(false);
 
+  const { dispatch, projectId, models } = props;
   return (
     <Col span={24}>
       <Collapse
@@ -60,16 +64,13 @@ const AddVideo = () => {
                     placeholder="Select a model"
                     optionFilterProp="children"
                     onChange={value => setSelectedModel(value)}
-                    // onFocus={onFocus}
-                    // onBlur={onBlur}
-                    // onSearch={onSearch}
                     filterOption={(input, option) =>
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    <Option value="Model 1">Model 1</Option>
-                    <Option value="Model 2">Model 2</Option>
-                    <Option value="Model 3">Model 3</Option>
+                    {models?.map(model => (
+                      <Option value={model.id}>{model.title}</Option>
+                    ))}
                   </Select>
                 </Row>
               </Col>
@@ -93,9 +94,7 @@ const AddVideo = () => {
               <Upload
                 // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                 listType="picture-card"
-                // accept=".mp4"
-                // showUploadList={false}
-                // disabled={fileList.length >= 1}
+                accept=".mp4"
                 // eslint-disable-next-line no-shadow
                 onChange={({ fileList }) => {
                   console.log('fileList', fileList);
@@ -140,9 +139,27 @@ const AddVideo = () => {
               </Button>
               <Button
                 type="primary"
+                loading={loading}
                 disabled={
                   (fileList && fileList.length === 0) || loadingFile || selectedModel === ''
                 }
+                onClick={() => {
+                  const formData = new FormData();
+                  formData.append('file', fileList[0]?.originFileObj);
+                  formData.append('model_id', selectedModel);
+                  formData.append('interval', interval);
+                  setLoading(true);
+                  dispatch({
+                    type: 'video/uploadVideo',
+                    payload: {
+                      projectId,
+                      userId: getCookie('userId'),
+                      formData,
+                    },
+                  }).then(() => {
+                    setLoading(false);
+                  });
+                }}
               >
                 Submit
               </Button>
@@ -155,4 +172,7 @@ const AddVideo = () => {
   );
 };
 
-export default AddVideo;
+export default connect(({ ml, video }) => ({
+  ml,
+  video,
+}))(AddVideo);

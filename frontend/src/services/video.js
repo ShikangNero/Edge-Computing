@@ -8,22 +8,20 @@ export async function getVideoByProject(params) {
       method: 'GET',
     },
   );
+  console.log('fetch videos', response);
   return response;
 }
 
 export async function postVideo(params) {
-  const { userId, projectId, model_id, interval, file } = params;
+  const { userId, projectId, formData } = params;
   const response = await request(
     `http://localhost:8000/videos/all?user_id=${userId}&project_id=${projectId}`,
     {
       method: 'POST',
-      body: {
-        model_id,
-        interval,
-        file, // object
-      },
+      body: formData,
     },
   );
+  console.log('upload video', response);
   return response;
 }
 
@@ -40,5 +38,6 @@ export async function getVideo(params) {
   const response = await request(`http://localhost:8000/videos/${videoId}`, {
     method: 'GET',
   });
+  console.log('get video detail', response);
   return response;
 }

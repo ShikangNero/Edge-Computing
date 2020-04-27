@@ -7,6 +7,7 @@ import {
   deleteImage,
   updateImageCollection,
 } from '@/services/image';
+import { message } from 'antd';
 
 export default {
   namespace: 'image',
@@ -20,10 +21,6 @@ export default {
     *getImageCollections({ payload }, { call, put }) {
       const response = yield call(getCollections, payload);
       if (response && response !== undefined) {
-        // const collectionArr = Object.keys(response).map(key => ({
-        //   name: key,
-        //   count: response[key],
-        // }));
         yield put({
           type: 'setData',
           collections: response,
@@ -33,46 +30,61 @@ export default {
 
     *uploadImages({ payload }, { call, put, select }) {
       const response = yield call(addImages, payload);
-      const collections = yield select(state => state.image.collections);
-      const { type } = payload;
-      const curCollection = collections.find(collection => collection.name === type);
-      if (curCollection) {
-        curCollection.count += 1;
-      } else {
-        collections.push({ name: type, count: 1 });
-      }
+      if (response && response !== undefined && response[0]) {
+        message.success('Successfully uploaded image(s)');
+        const collections = yield select(state => state.image.collections);
+        const { type } = payload;
+        const curCollection = collections.find(collection => collection.name === type);
+        if (curCollection) {
+          curCollection.count += 1;
+        } else {
+          collections.push({ name: type, count: 1, avatarImage: response[0] });
+        }
 
-      yield put({
-        type: 'setData',
-        collections,
-      });
-    },
-
-    *updateCollectionName({ payload }, { call, put, select }) {
-      const response = yield call(updateCollection, payload);
-      const collections = yield select(state => state.image.collections);
-      const { oldType, newType } = payload;
-      const curCollection = collections.find(collection => collection.name === oldType);
-      if (curCollection) {
-        curCollection.name = newType;
         yield put({
           type: 'setData',
           collections,
         });
+      } else {
+        message.error('Failed to upload image(s)');
+      }
+    },
+
+    *updateCollectionName({ payload }, { call, put, select }) {
+      const response = yield call(updateCollection, payload);
+      if (response && response !== undefined) {
+        const collections = yield select(state => state.image.collections);
+        const { oldType, newType } = payload;
+        const curCollection = collections.find(collection => collection.name === oldType);
+        message.success('Successfully updated collection name');
+        if (curCollection) {
+          curCollection.name = newType;
+          yield put({
+            type: 'setData',
+            collections,
+          });
+        }
+      } else {
+        message.error('Failed to update collection name');
       }
     },
 
     *removeCollection({ payload }, { call, put, select }) {
       const response = yield call(deleteCollection, payload);
-      const collections = yield select(state => state.image.collections);
-      const { type } = payload;
-      const curIdx = collections.findIndex(collection => collection.name === type);
-      if (curIdx > -1) {
-        collections.splice(curIdx, 1);
-        yield put({
-          type: 'setData',
-          collections,
-        });
+      if (response && response !== undefined) {
+        const collections = yield select(state => state.image.collections);
+        const { type } = payload;
+        const curIdx = collections.findIndex(collection => collection.name === type);
+        message.success('Successfully deleted collection');
+        if (curIdx > -1) {
+          collections.splice(curIdx, 1);
+          yield put({
+            type: 'setData',
+            collections,
+          });
+        }
+      } else {
+        message.error('Failed to delete collection');
       }
     },
 
@@ -86,30 +98,40 @@ export default {
 
     *removeImage({ payload }, { call, put, select }) {
       const response = yield call(deleteImage, payload);
-      const images = yield select(state => state.image.images);
-      const { imageId } = payload;
-      const curIdx = images.findIndex(image => image.id === imageId);
-      if (curIdx > -1) {
-        images.splice(curIdx, 1);
+      if (response && response !== undefined) {
+        const images = yield select(state => state.image.images);
+        const { imageId } = payload;
+        const curIdx = images.findIndex(image => image.id === imageId);
+        if (curIdx > -1) {
+          images.splice(curIdx, 1);
+        }
+        message.success('Successfully deleted image');
+        yield put({
+          type: 'setData',
+          images,
+        });
+      } else {
+        message.error('Failed to delete image');
       }
-      yield put({
-        type: 'setData',
-        images,
-      });
     },
 
     *changeImageCollection({ payload }, { call, put, select }) {
       const response = yield call(updateImageCollection, payload);
-      const images = yield select(state => state.image.images);
-      const { imageId } = payload;
-      const curIdx = images.findIndex(image => image.id === imageId);
-      if (curIdx > -1) {
-        images.splice(curIdx, 1);
+      if (response && response !== undefined) {
+        const images = yield select(state => state.image.images);
+        const { imageId } = payload;
+        const curIdx = images.findIndex(image => image.id === imageId);
+        if (curIdx > -1) {
+          images.splice(curIdx, 1);
+        }
+        message.success('Successfully changed collection name');
+        yield put({
+          type: 'setData',
+          images,
+        });
+      } else {
+        message.error('Failed to change collection name');
       }
-      yield put({
-        type: 'setData',
-        images,
-      });
     },
   },
 
