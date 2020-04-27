@@ -25,7 +25,7 @@ const PredictedImage = props => {
   const [tags, setTags] = useState(filteredCollections);
 
   return (
-    <List.Item>
+    <List.Item style={{ borderLeft: '1px solid #f0f0f0', padding: 12 }}>
       <Row justify="center" style={{ marginBottom: 12 }}>
         {!move ? (
           <Tag

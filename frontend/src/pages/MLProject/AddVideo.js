@@ -27,6 +27,13 @@ const AddVideo = props => {
   const [loading, setLoading] = useState(false);
 
   const { dispatch, projectId, models } = props;
+
+  function clear() {
+    setFileList([]);
+    setSelectedModel('');
+    setInterval(100);
+  }
+
   return (
     <Col span={24}>
       <Collapse
@@ -80,7 +87,7 @@ const AddVideo = props => {
                     Input Interval
                   </Typography.Text>
                   <InputNumber
-                    min={100}
+                    min={50}
                     max={500}
                     value={interval}
                     onChange={value => setInterval(value)}
@@ -158,6 +165,7 @@ const AddVideo = props => {
                     },
                   }).then(() => {
                     setLoading(false);
+                    clear();
                   });
                 }}
               >

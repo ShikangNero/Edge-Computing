@@ -83,7 +83,7 @@ const VideoDetail = props => {
               style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
             />
           </Col>
-          <Col xs={24} sm={8} style={{ padding: 12 }}>
+          <Col xs={24} sm={8} style={{ height: 500 }}>
             <List
               itemLayout="vertical"
               style={{ height: '100%', overflow: 'scroll', width: '100%' }}
