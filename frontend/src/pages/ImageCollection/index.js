@@ -114,7 +114,7 @@ const ImageCollection = props => {
                         setNewTag('');
                       }}
                     >
-                      <PlusOutlined /> Add item
+                      <PlusOutlined /> Add Collection
                     </Button>
                   </div>
                 </div>

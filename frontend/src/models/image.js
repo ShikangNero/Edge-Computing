@@ -124,13 +124,13 @@ export default {
         if (curIdx > -1) {
           images.splice(curIdx, 1);
         }
-        message.success('Successfully changed collection name');
+        message.success('Successfully moved image to the selected collection');
         yield put({
           type: 'setData',
           images,
         });
       } else {
-        message.error('Failed to change collection name');
+        message.error('Failed to move image to the selected collection');
       }
     },
   },

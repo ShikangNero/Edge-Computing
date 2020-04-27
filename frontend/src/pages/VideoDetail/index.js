@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Card, Row, Col, Button, Divider, Typography, Tooltip, List, Avatar } from 'antd';
-import { ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Button, Divider, Typography, Tooltip, List, Avatar, Tag } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { router } from 'umi';
-
-const data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+import { getCookie } from '@/utils/cookie';
+import PredictedImage from './PredictedImage';
 
 const VideoDetail = props => {
   const {
     match: { params },
     video: { video },
+    image: { collections },
     dispatch,
     loading,
   } = props;
@@ -23,6 +24,13 @@ const VideoDetail = props => {
         type: 'video/getVideoDetail',
         payload: {
           videoId: params && params.video_id,
+        },
+      });
+      dispatch({
+        type: 'image/getImageCollections',
+        payload: {
+          userId: getCookie('userId'),
+          projectId: params && params.project_id,
         },
       });
       setInitloaded(true);
@@ -50,9 +58,9 @@ const VideoDetail = props => {
 
             <Col style={{ width: 'calc(100% - 53px)' }}>
               <Row>
-                <Tooltip title={video?.title}>
+                <Tooltip title={video?.video?.title}>
                   <Typography.Text strong style={{ fontSize: 18 }} ellipsis>
-                    {video?.title}
+                    {video?.video?.title}
                   </Typography.Text>
                 </Tooltip>
               </Row>
@@ -65,30 +73,22 @@ const VideoDetail = props => {
           </Row>
         }
       >
-        <Row style={{ height: 400 }}>
-          <Col span={12} style={{ height: '100%' }}>
+        <Row>
+          <Col xs={24} sm={16} style={{ height: 500 }}>
             <video
-              src={video?.url}
+              src={video?.video?.url}
               width="100%"
               height="100%"
               controls
-              style={{ borderBottomLeftRadius: 10 }}
+              style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
             />
           </Col>
-          <Col span={12} style={{ padding: 12, height: '100%' }}>
+          <Col xs={24} sm={8} style={{ padding: 12 }}>
             <List
-              style={{ height: '100%', overflow: 'scroll' }}
-              dataSource={data}
-              renderItem={item => (
-                <List.Item>
-                  <Avatar
-                    // src={image?.url}
-                    icon={<UserOutlined />}
-                    shape="square"
-                    style={{ width: '100%', height: 40 }}
-                  />
-                </List.Item>
-              )}
+              itemLayout="vertical"
+              style={{ height: '100%', overflow: 'scroll', width: '100%' }}
+              dataSource={video?.images || []}
+              renderItem={img => <PredictedImage curImage={img} collections={collections || []} />}
             />
           </Col>
         </Row>
@@ -97,6 +97,7 @@ const VideoDetail = props => {
   );
 };
 
-export default connect(({ video }) => ({
+export default connect(({ video, image }) => ({
   video,
+  image,
 }))(VideoDetail);

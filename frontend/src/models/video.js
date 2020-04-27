@@ -40,6 +40,19 @@ export default {
         message.error('Failed to upload video');
       }
     },
+
+    *updateImageTag({ payload }, { put, select }) {
+      const { imageId, type } = payload;
+      const video = yield select(state => state.video.video);
+      const curImage = video?.images?.find(image => image.id === imageId);
+      if (curImage) {
+        curImage.type = type;
+        yield put({
+          type: 'setData',
+          video,
+        });
+      }
+    },
   },
 
   reducers: {
