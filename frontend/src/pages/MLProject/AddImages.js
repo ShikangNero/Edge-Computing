@@ -15,7 +15,9 @@ const AddImages = props => {
   const [previewImage, setPreviewImage] = useState('');
   const [loadingFile, setLoadingFile] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState([]);
+  const [selectedModel, setSelectedModel] = useState(null);
   const [loading, setLoading] = useState([false]);
+  const [singleLoading, setSingleLoading] = useState(false);
 
   // monitor loading status for all post request in the for loop
   let hadLoading = false;
@@ -26,7 +28,9 @@ const AddImages = props => {
   const {
     dispatch,
     image: { collections },
+    model: { models },
     projectId,
+    type,
   } = props;
 
   function getBase64(file) {
@@ -43,7 +47,6 @@ const AddImages = props => {
       // eslint-disable-next-line no-param-reassign
       file.preview = await getBase64(file.originFileObj);
     }
-
     setPreviewImage(file.url || file.preview);
     setPreviewVisible(true);
   }
@@ -74,21 +77,39 @@ const AddImages = props => {
               }
               key="addImage"
             >
-              <Row style={{ marginBottom: 24 }} gutter={[8, 8]}>
-                <Col span={24}>
-                  <Select
-                    mode="tags"
-                    value={selectedCollection}
-                    style={{ width: 300 }}
-                    placeholder="Please select a collection for your image(s)"
-                    onChange={value => setSelectedCollection(value)}
-                  >
-                    {collections.map(option => (
-                      <Option key={option.name}>{option.name}</Option>
-                    ))}
-                  </Select>
-                </Col>
-              </Row>
+              {type === 'assets' ? (
+                <Row style={{ marginBottom: 24 }} gutter={[8, 8]}>
+                  <Col span={24}>
+                    <Select
+                      mode="tags"
+                      // value={selectedCollection}
+                      style={{ width: 300 }}
+                      placeholder="Please select a collection for your image(s)"
+                      onChange={value => setSelectedCollection(value)}
+                    >
+                      {collections?.map(option => (
+                        <Option key={option.name}>{option.name}</Option>
+                      ))}
+                    </Select>
+                  </Col>
+                </Row>
+              ) : (
+                <Row style={{ marginBottom: 24 }} gutter={[8, 8]}>
+                  <Col span={24}>
+                    <Select
+                      // mode="tags"
+                      // value={selectedModel}
+                      style={{ width: 300 }}
+                      placeholder="Please select a model to predict"
+                      onChange={value => setSelectedModel(value)}
+                    >
+                      {models?.map(option => (
+                        <Option key={option.id}>{option.title}</Option>
+                      ))}
+                    </Select>
+                  </Col>
+                </Row>
+              )}
               <Row>
                 <Col span={24}>
                   <Upload
@@ -139,30 +160,48 @@ const AddImages = props => {
                     disabled={
                       (fileList && fileList.length === 0) ||
                       loadingFile ||
-                      !selectedCollection ||
-                      selectedCollection.length === 0
+                      (type === 'assets' &&
+                        (!selectedCollection || selectedCollection.length === 0))
                     }
-                    loading={hadLoading}
+                    loading={type === 'assets' ? hadLoading : singleLoading}
                     onClick={async () => {
-                      setLoading(selectedCollection.map(() => true));
-                      selectedCollection.forEach((curCollection, idx) => {
+                      if (type === 'assets') {
+                        setLoading(selectedCollection.map(() => true));
+                        selectedCollection.forEach((curCollection, idx) => {
+                          const formData = new FormData();
+                          const uploadImages = fileList?.map(item => item.originFileObj) || [];
+                          uploadImages.forEach(image => formData.append('files', image));
+                          formData.append('type', curCollection);
+                          dispatch({
+                            type: 'image/uploadImages',
+                            payload: {
+                              projectId,
+                              userId: getCookie('userId'),
+                              formData,
+                              type: curCollection,
+                            },
+                          }).then(() => {
+                            loading[idx] = false;
+                            setLoading(loading);
+                          });
+                        });
+                      } else if (type === 'predict') {
+                        setSingleLoading(true);
                         const formData = new FormData();
                         const uploadImages = fileList?.map(item => item.originFileObj) || [];
                         uploadImages.forEach(image => formData.append('files', image));
-                        formData.append('type', curCollection);
+                        formData.append('model_id', selectedModel);
                         dispatch({
-                          type: 'image/uploadImages',
+                          type: 'image/predictSelectedImages',
                           payload: {
                             projectId,
                             userId: getCookie('userId'),
                             formData,
-                            type: curCollection,
                           },
                         }).then(() => {
-                          loading[idx] = false;
-                          setLoading(loading);
+                          setSingleLoading(false);
                         });
-                      });
+                      }
                       setFileList([]);
                       setSelectedCollection([]);
                     }}
@@ -183,7 +222,8 @@ const AddImages = props => {
   );
 };
 
-export default connect(({ ml, image }) => ({
+export default connect(({ ml, image, model }) => ({
   ml,
   image,
+  model,
 }))(AddImages);

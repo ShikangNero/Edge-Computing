@@ -5,6 +5,7 @@ import {
   addProject,
   deleteProject,
   getProjectDetail,
+  updateProjectDescription,
 } from '../services/projects';
 
 const FAKE_VIDEOS = [
@@ -99,16 +100,18 @@ export default {
       });
     },
 
-    *getVideoDetail(payload, { put }) {
-      const { id } = payload;
-      const curVideo = FAKE_VIDEOS.find(video => video.id === id);
-      yield put({
-        type: 'setData',
-        video: {
-          url: 'https://www.youtube.com/embed/ukzFI9rgwfU',
-          ...curVideo,
-        },
-      });
+    *updateDescription({ payload }, { call, put, select }) {
+      const response = yield call(updateProjectDescription, payload);
+      const projects = yield select(state => state.ml.projects);
+      const { projectId, description } = payload;
+      const curProject = projects.find(project => project.id === projectId);
+      if (curProject) {
+        curProject.description = description;
+        yield put({
+          type: 'setData',
+          projects,
+        });
+      }
     },
   },
 

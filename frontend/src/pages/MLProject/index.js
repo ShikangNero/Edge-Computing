@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Card, Tabs, Typography, Row, Col, Tag } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { FileImageOutlined, VideoCameraOutlined, AppstoreOutlined } from '@ant-design/icons';
+import {
+  FileImageOutlined,
+  VideoCameraOutlined,
+  AppstoreOutlined,
+  ClusterOutlined,
+} from '@ant-design/icons';
 import ImageSection from './ImageSection';
 import VideoSection from './VideoSection';
 import ModelSection from './ModelSection';
+import PredictSection from './PredictSection';
 import { typeColorPicker } from '@/utils/colorPicker';
 import { getCookie } from '@/utils/cookie';
 // import styles from './index.less';
@@ -103,6 +109,16 @@ const MLProject = props => {
             key="3"
           >
             <ModelSection projectId={params?.project_id} />
+          </TabPane>
+          <TabPane
+            tab={
+              <Typography.Text type="secondary">
+                <ClusterOutlined style={{ marginRight: 4 }} /> Predict
+              </Typography.Text>
+            }
+            key="4"
+          >
+            <PredictSection projectId={params?.project_id} />
           </TabPane>
         </Tabs>
       </Card>

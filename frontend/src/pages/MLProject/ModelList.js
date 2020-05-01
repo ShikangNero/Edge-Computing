@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'dva';
-import { List, Row, Col, Typography, Dropdown, Menu, Button, Tag, Alert } from 'antd';
+import { List, Row, Col, Typography, Dropdown, Menu, Button, Tag, Alert, Empty } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { typeColorPicker } from '@/utils/colorPicker';
 
@@ -9,7 +9,11 @@ const ModelList = props => {
   const [remove, setRemove] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  return (
+  return !data || data.length === 0 ? (
+    <Row justify="center" style={{ width: '100%' }}>
+      <Empty description="No model found" />
+    </Row>
+  ) : (
     <List
       style={{ width: '100%', margin: '8px 0' }}
       pagination={{

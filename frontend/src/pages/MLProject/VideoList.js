@@ -1,12 +1,19 @@
 import moment from 'moment';
-import React from 'react';
-import { List, Col, Row, Typography, Dropdown, Menu, Button } from 'antd';
+import { connect } from 'dva';
+import React, { useState } from 'react';
+import { List, Col, Row, Typography, Dropdown, Menu, Button, Alert, Empty } from 'antd';
 import { EllipsisOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { router } from 'umi';
 
 const VideoList = props => {
-  const { data, projectId } = props;
-  return (
+  const [remove, setRemove] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { data, projectId, dispatch } = props;
+  return !data || data.length === 0 ? (
+    <Row justify="center" style={{ width: '100%' }}>
+      <Empty description="No video found" />
+    </Row>
+  ) : (
     <List
       style={{ width: '100%' }}
       pagination={{
@@ -41,24 +48,75 @@ const VideoList = props => {
             placement="bottomRight"
             trigger="click"
             overlay={
-              <Menu>
-                <Menu.Item
-                  key="edit"
-                  onClick={value => {
-                    value.domEvent.stopPropagation();
-                  }}
-                >
-                  Edit
-                </Menu.Item>
-                <Menu.Item
-                  key="delete"
-                  onClick={value => {
-                    value.domEvent.stopPropagation();
-                  }}
-                >
-                  Delete
-                </Menu.Item>
-              </Menu>
+              remove ? (
+                <Menu onclick={e => e.stopPropagation()} style={{ padding: '4px 0' }}>
+                  <Row style={{ marginBottom: 8 }}>
+                    <Alert
+                      type="warning"
+                      showIcon
+                      message="Confirm to delete this image?"
+                      style={{ borderLeft: 'none', borderRight: 'none' }}
+                    />
+                  </Row>
+                  <Row justify="end" style={{ padding: '4px 8px' }}>
+                    <Button
+                      loading={loading}
+                      size="small"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setRemove(false);
+                      }}
+                      style={{ marginRight: 8 }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      loading={loading}
+                      size="small"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setLoading(true);
+                        dispatch({
+                          type: 'video/removeVideo',
+                          payload: {
+                            videoId: item?.id,
+                          },
+                        }).then(() => {
+                          setLoading(false);
+                          setRemove(false);
+                        });
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Row>
+                </Menu>
+              ) : (
+                <Menu>
+                  <Menu.Item key="edit">
+                    <Button
+                      disabled
+                      type="link"
+                      onClick={e => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </Menu.Item>
+                  <Menu.Item key="delete">
+                    <Button
+                      type="link"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setRemove(true);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </Menu.Item>
+                </Menu>
+              )
             }
           >
             <Button
@@ -76,4 +134,7 @@ const VideoList = props => {
   );
 };
 
-export default VideoList;
+export default connect(({ video, model }) => ({
+  video,
+  model,
+}))(VideoList);

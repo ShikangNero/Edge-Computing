@@ -39,6 +39,7 @@ const VideoDetail = props => {
   return (
     <PageHeaderWrapper>
       <Card
+        id="videoDetailContainer"
         bodyStyle={{ padding: 0 }}
         // loading={loading.effects['ml/getVideoDetail']}
         headStyle={{ paddingLeft: 12 }}
@@ -88,7 +89,15 @@ const VideoDetail = props => {
               itemLayout="vertical"
               style={{ height: '100%', overflow: 'scroll', width: '100%' }}
               dataSource={video?.images || []}
-              renderItem={img => <PredictedImage curImage={img} collections={collections || []} />}
+              renderItem={img => (
+                <List.Item style={{ borderLeft: '1px solid #f0f0f0', padding: 12 }}>
+                  <PredictedImage
+                    curImage={img}
+                    collections={collections || []}
+                    previewContainer={document.getElementById('videoDetailContainer')}
+                  />
+                </List.Item>
+              )}
             />
           </Col>
         </Row>

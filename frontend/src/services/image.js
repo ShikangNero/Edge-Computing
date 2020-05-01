@@ -89,14 +89,12 @@ export async function updateImageCollection(params) {
 }
 
 export async function predictImages(params) {
-  const { userId, projectId, files } = params;
+  const { userId, projectId, formData } = params;
   const response = await request(
     `http://localhost:8000/images/predict?user_id=${userId}&project_id=${projectId}`,
     {
       method: 'POST',
-      body: {
-        files,
-      },
+      body: formData,
     },
   );
   return response;

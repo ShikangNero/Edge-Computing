@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Row, Col } from 'antd';
+import { Row, Col, Empty } from 'antd';
 import ImageCollectionCard from './ImageCollectionCard';
 import AddImages from './AddImages';
 import { getCookie } from '@/utils/cookie';
@@ -28,14 +28,20 @@ const ImageSection = props => {
 
   return (
     <>
-      <AddImages projectId={projectId} />
-      <Row gutter={[16, 16]}>
-        {collections.map(imgCollection => (
-          <Col xs={24} sm={12} md={8} xl={6} key={imgCollection.name}>
-            <ImageCollectionCard projectId={projectId} imgCollection={imgCollection} />
-          </Col>
-        ))}
-      </Row>
+      <AddImages projectId={projectId} type="assets" />
+      {!collections || collections.length === 0 ? (
+        <Row justify="center" style={{ width: '100%' }}>
+          <Empty description="No image collection found" />
+        </Row>
+      ) : (
+        <Row gutter={[16, 16]}>
+          {collections?.map(imgCollection => (
+            <Col xs={24} sm={12} md={8} xl={6} key={imgCollection.name}>
+              <ImageCollectionCard projectId={projectId} imgCollection={imgCollection} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </>
   );
 };

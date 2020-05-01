@@ -6,6 +6,7 @@ import {
   getImageByCollection,
   deleteImage,
   updateImageCollection,
+  predictImages,
 } from '@/services/image';
 import { message } from 'antd';
 
@@ -15,6 +16,7 @@ export default {
   state: {
     collections: [],
     images: [],
+    predictedImages: [],
   },
 
   effects: {
@@ -71,7 +73,7 @@ export default {
 
     *removeCollection({ payload }, { call, put, select }) {
       const response = yield call(deleteCollection, payload);
-      if (response && response !== undefined) {
+      if (response !== undefined && response?.message === 'success') {
         const collections = yield select(state => state.image.collections);
         const { type } = payload;
         const curIdx = collections.findIndex(collection => collection.name === type);
@@ -98,7 +100,7 @@ export default {
 
     *removeImage({ payload }, { call, put, select }) {
       const response = yield call(deleteImage, payload);
-      if (response && response !== undefined) {
+      if (response !== undefined && response?.message === 'success') {
         const images = yield select(state => state.image.images);
         const { imageId } = payload;
         const curIdx = images.findIndex(image => image.id === imageId);
@@ -131,6 +133,32 @@ export default {
         });
       } else {
         message.error('Failed to move image to the selected collection');
+      }
+    },
+
+    *predictSelectedImages({ payload }, { call, put }) {
+      const response = yield call(predictImages, payload);
+      if (response && response !== undefined) {
+        message.success('Prediction done. The result is showing below');
+        yield put({
+          type: 'setData',
+          predictedImages: response,
+        });
+      } else {
+        message.error('Failed to predict');
+      }
+    },
+
+    *updatePredictImageTag({ payload }, { put, select }) {
+      const { imageId, type } = payload;
+      const predictedImages = yield select(state => state.image.predictedImages);
+      const curImage = predictedImages?.find(image => image.id === imageId);
+      if (curImage) {
+        curImage.type = type;
+        yield put({
+          type: 'setData',
+          predictedImages,
+        });
       }
     },
   },
