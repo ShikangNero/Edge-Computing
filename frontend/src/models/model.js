@@ -19,7 +19,7 @@ export default {
 
     *createNewModel({ payload }, { call, put, select }) {
       const response = yield call(createModel, payload);
-      if (response !== undefined && response?.id) {
+      if (response !== undefined && response?.message === 'success') {
         message.success('Successfully trained a new model');
         const models = yield select(state => state.model.models);
         models.unshift(response);

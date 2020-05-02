@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Modal, Row, Tag, Avatar, Select, Divider, Input, Button, Card } from 'antd';
 import { UserOutlined, PlusOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
@@ -13,17 +13,21 @@ const PredictedImage = props => {
   const [preview, setPreview] = useState(false);
 
   const [selectedCollection, setSelectedCollection] = useState('');
+  const [tags, setTags] = useState([]);
 
-  let filteredCollections = [];
-  if (collections) {
-    const curIdx = collections.findIndex(collection => collection.name === curImage?.type);
-    filteredCollections = [...collections];
-    if (curIdx > -1) {
-      filteredCollections.splice(curIdx, 1);
+  function handleTagClick() {
+    let filteredCollections = [];
+    console.log('trigger set tag');
+    if (collections) {
+      const curIdx = collections.findIndex(collection => collection.name === curImage?.type);
+      filteredCollections = [...collections];
+      if (curIdx > -1) {
+        filteredCollections.splice(curIdx, 1);
+      }
     }
-  }
 
-  const [tags, setTags] = useState(filteredCollections);
+    setTags(filteredCollections);
+  }
 
   return (
     <>
@@ -33,7 +37,10 @@ const PredictedImage = props => {
             <Tag
               color="cyan"
               style={{ fontSize: 12, cursor: 'pointer' }}
-              onClick={() => setMove(true)}
+              onClick={() => {
+                handleTagClick();
+                setMove(true);
+              }}
             >
               {curImage?.type}
             </Tag>

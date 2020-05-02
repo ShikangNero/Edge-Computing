@@ -69,15 +69,20 @@ export default {
     *removeProject({ payload }, { call, put, select }) {
       const { projectId } = payload;
       const response = yield call(deleteProject, payload);
-      const projects = yield select(state => state.ml.projects);
-      const removeProjectIdx = projects.findIndex(project => project.id === projectId);
-      if (removeProjectIdx > -1) {
-        projects.splice(removeProjectIdx, 1);
+      if (response !== undefined && response?.message === 'success') {
+        message.success('Successfully removed selected project');
+        const projects = yield select(state => state.ml.projects);
+        const removeProjectIdx = projects.findIndex(project => project.id === projectId);
+        if (removeProjectIdx > -1) {
+          projects.splice(removeProjectIdx, 1);
+        }
+        yield put({
+          type: 'setData',
+          projects,
+        });
+      } else {
+        message.error('Failed to remove selected project');
       }
-      yield put({
-        type: 'setData',
-        projects,
-      });
     },
 
     *removeImageAsset(payload, { put, select }) {
@@ -102,15 +107,20 @@ export default {
 
     *updateDescription({ payload }, { call, put, select }) {
       const response = yield call(updateProjectDescription, payload);
-      const projects = yield select(state => state.ml.projects);
-      const { projectId, description } = payload;
-      const curProject = projects.find(project => project.id === projectId);
-      if (curProject) {
-        curProject.description = description;
-        yield put({
-          type: 'setData',
-          projects,
-        });
+      if (response !== undefined && response?.message === 'success') {
+        const projects = yield select(state => state.ml.projects);
+        const { projectId, description } = payload;
+        const curProject = projects.find(project => project.id === projectId);
+        message.success('Successfully updated project description');
+        if (curProject) {
+          curProject.description = description;
+          yield put({
+            type: 'setData',
+            projects,
+          });
+        }
+      } else {
+        message.error('Failed to update project description');
       }
     },
   },

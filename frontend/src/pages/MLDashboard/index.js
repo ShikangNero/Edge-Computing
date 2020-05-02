@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Typography, Button } from 'antd';
+import { Card, Row, Col, Typography, Button, Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ProjectCard from './ProjectCard';
 import ModalCreateProject from './ModalCreateProject';
@@ -49,14 +49,19 @@ const MLDashboard = props => {
         </Row>
       }
     >
-      <Row gutter={[16, 16]}>
-        {projects &&
-          projects.map(project => (
+      {!projects || projects.length === 0 ? (
+        <Row justify="center" style={{ width: '100%' }}>
+          <Empty description="No project found" />
+        </Row>
+      ) : (
+        <Row gutter={[16, 16]}>
+          {projects.map(project => (
             <Col xs={24} md={12} lg={8} key={project.id}>
               <ProjectCard project={project} />
             </Col>
           ))}
-      </Row>
+        </Row>
+      )}
       <ModalCreateProject
         visible={createProjectVisible}
         handleCloseModal={() => setCreateProjectVisible(false)}

@@ -126,6 +126,14 @@ export default {
         if (curIdx > -1) {
           images.splice(curIdx, 1);
         }
+        const collections = yield select(state => state.image.collections);
+        const { type } = payload;
+        const curCollection = collections.find(collection => collection.name === type);
+        if (curCollection) {
+          curCollection.count += 1;
+        } else {
+          collections.push({ name: type, count: 1, avatarImage: response[0] });
+        }
         message.success('Successfully moved image to the selected collection');
         yield put({
           type: 'setData',
