@@ -1,9 +1,7 @@
-# Ant Design Pro
+# Cloud-Based Remote Device Management System
+This is the frontend of an Edge Computing system that our group created to provide remote edge device management, online Machine Learning pipeline, and real-time Machine Learning result monitor.
 
-This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
-
-## Environment Prepare
-
+## How to start the code
 Install `node_modules`:
 
 ```bash
@@ -16,42 +14,8 @@ or
 yarn
 ```
 
-## Provided Scripts
-
-Ant Design Pro provides some useful script to help you quick start and build with web project, code style check and test.
-
-Scripts provided in `package.json`. It's safe to modify or add additional script:
-
-### Start project
+Run the code:
 
 ```bash
 npm start
 ```
-
-### Build project
-
-```bash
-npm run build
-```
-
-### Check code style
-
-```bash
-npm run lint
-```
-
-You can also use script to auto fix some lint error:
-
-```bash
-npm run lint:fix
-```
-
-### Test code
-
-```bash
-npm test
-```
-
-## More
-
-You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
