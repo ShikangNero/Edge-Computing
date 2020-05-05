@@ -22,33 +22,11 @@ const Model = {
 
     *login({ payload }, { call, put }) {
       const response = yield call(login, payload);
-      console.log(response);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
       if (response.status === 'ok') {
-        // Login successfully
-        // const urlParams = new URL(window.location.href);
-        // const params = getPageQuery();
-        // let { redirect } = params;
-
-        // if (redirect) {
-        //   const redirectUrlParams = new URL(redirect);
-
-        //   if (redirectUrlParams.origin === urlParams.origin) {
-        //     redirect = redirect.substr(urlParams.origin.length);
-
-        //     if (redirect.match(/^\/.*#/)) {
-        //       redirect = redirect.substr(redirect.indexOf('#') + 1);
-        //     }
-        //   } else {
-        //     window.location.href = '/';
-        //     return;
-        //   }
-        // }
-
-        // router.replace(redirect || '/');
         router.push('/');
       }
     },

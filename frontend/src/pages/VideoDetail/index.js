@@ -1,7 +1,8 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Card, Row, Col, Button, Divider, Typography, Tooltip, List, Avatar, Tag } from 'antd';
+import { Card, Row, Col, Button, Divider, Typography, Tooltip, List } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { router } from 'umi';
@@ -14,7 +15,6 @@ const VideoDetail = props => {
     video: { video },
     image: { collections },
     dispatch,
-    loading,
   } = props;
   const [initLoaded, setInitloaded] = useState(false);
   useEffect(() => {

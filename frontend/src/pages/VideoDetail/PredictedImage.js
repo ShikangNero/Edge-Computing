@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'dva';
 import { Modal, Row, Tag, Avatar, Select, Divider, Input, Button, Card } from 'antd';
 import { UserOutlined, PlusOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';

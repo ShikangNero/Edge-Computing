@@ -22,7 +22,7 @@ const MLProject = props => {
   const [init, setInit] = useState(false);
   const {
     match: { params },
-    ml: { videoAssets, project },
+    ml: { project },
     dispatch,
   } = props;
 
