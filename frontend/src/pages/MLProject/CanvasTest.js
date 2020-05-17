@@ -341,12 +341,32 @@ const CanvasTest = props => {
         <Button type="primary" onClick={() => message.success('updated the detection result')}>
           Update
         </Button>
+        <Button
+          style={{ marginLeft: 8 }}
+          onClick={() => {
+            const element = document.createElement('a');
+            element.setAttribute(
+              'href',
+              'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(curShapes)),
+            );
+            element.setAttribute('download', 'result');
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+          }}
+        >
+          Export JSON Result
+        </Button>
         <ExcelFile
           filename="result export"
           element={
-            <Button style={{ marginLeft: 8 }} type="primary">
+            <Button style={{ marginLeft: 8 }}>
               <Typography.Paragraph strong type="secondary" style={{ padding: 0, margin: 0 }}>
-                Result Export
+                Export Excel Result
               </Typography.Paragraph>
             </Button>
           }
