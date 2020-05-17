@@ -8,6 +8,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { router } from 'umi';
 import { getCookie } from '@/utils/cookie';
 import PredictedImage from './PredictedImage';
+import CanvasTest from '../MLProject/CanvasTest';
 
 const VideoDetail = props => {
   const {
@@ -40,7 +41,7 @@ const VideoDetail = props => {
     <PageHeaderWrapper>
       <Card
         id="videoDetailContainer"
-        bodyStyle={{ padding: 0 }}
+        bodyStyle={{ padding: 0, overflow: 'scroll' }}
         // loading={loading.effects['ml/getVideoDetail']}
         headStyle={{ paddingLeft: 12 }}
         title={
@@ -74,33 +75,37 @@ const VideoDetail = props => {
           </Row>
         }
       >
-        <Row>
-          <Col xs={24} sm={16} style={{ height: 500 }}>
-            <video
-              src={video?.video?.url}
-              width="100%"
-              height="100%"
-              controls
-              style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
-            />
-          </Col>
-          <Col xs={24} sm={8} style={{ height: 500 }}>
-            <List
-              itemLayout="vertical"
-              style={{ height: '100%', overflow: 'scroll', width: '100%' }}
-              dataSource={video?.images || []}
-              renderItem={img => (
-                <List.Item style={{ borderLeft: '1px solid #f0f0f0', padding: 12 }}>
-                  <PredictedImage
-                    curImage={img}
-                    collections={collections || []}
-                    previewContainer={document.getElementById('videoDetailContainer')}
-                  />
-                </List.Item>
-              )}
-            />
-          </Col>
-        </Row>
+        {video?.images[0] && video?.images[0].type === 'detected' ? (
+          <CanvasTest image={video?.images[0]} />
+        ) : (
+          <Row>
+            <Col xs={24} sm={16} style={{ height: 500 }}>
+              <video
+                src={video?.video?.url}
+                width="100%"
+                height="100%"
+                controls
+                style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
+              />
+            </Col>
+            <Col xs={24} sm={8} style={{ height: 500 }}>
+              <List
+                itemLayout="vertical"
+                style={{ height: '100%', overflow: 'scroll', width: '100%' }}
+                dataSource={video?.images || []}
+                renderItem={img => (
+                  <List.Item style={{ borderLeft: '1px solid #f0f0f0', padding: 12 }}>
+                    <PredictedImage
+                      curImage={img}
+                      collections={collections || []}
+                      previewContainer={document.getElementById('videoDetailContainer')}
+                    />
+                  </List.Item>
+                )}
+              />
+            </Col>
+          </Row>
+        )}
       </Card>
     </PageHeaderWrapper>
   );

@@ -14,6 +14,7 @@ import ModelSection from './ModelSection';
 import PredictSection from './PredictSection';
 import { typeColorPicker } from '@/utils/colorPicker';
 import { getCookie } from '@/utils/cookie';
+import CanvasTest from './CanvasTest';
 // import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -44,6 +45,7 @@ const MLProject = props => {
       dispatch({
         type: 'ml/getVideoAssets',
       });
+
       setInit(true);
     }
   });
@@ -119,6 +121,16 @@ const MLProject = props => {
             key="4"
           >
             <PredictSection projectId={params?.project_id} />
+          </TabPane>
+          <TabPane
+            tab={
+              <Typography.Text type="secondary">
+                <ClusterOutlined style={{ marginRight: 4 }} /> TEST
+              </Typography.Text>
+            }
+            key="5"
+          >
+            <CanvasTest />
           </TabPane>
         </Tabs>
       </Card>
