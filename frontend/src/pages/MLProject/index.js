@@ -122,16 +122,6 @@ const MLProject = props => {
           >
             <PredictSection projectId={params?.project_id} />
           </TabPane>
-          <TabPane
-            tab={
-              <Typography.Text type="secondary">
-                <ClusterOutlined style={{ marginRight: 4 }} /> TEST
-              </Typography.Text>
-            }
-            key="5"
-          >
-            <CanvasTest />
-          </TabPane>
         </Tabs>
       </Card>
     </PageHeaderWrapper>
