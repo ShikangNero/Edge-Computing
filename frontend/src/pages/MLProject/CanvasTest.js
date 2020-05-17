@@ -360,7 +360,9 @@ const CanvasTest = props => {
             document.body.removeChild(element);
           }}
         >
-          Export JSON Result
+          <Typography.Paragraph strong type="secondary" style={{ padding: 0, margin: 0 }}>
+            Export JSON Result
+          </Typography.Paragraph>
         </Button>
         <ExcelFile
           filename="result export"
