@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Tag, Input, Button, message } from 'antd';
+import ReactExport from 'react-export-excel';
+import { Tag, Input, Button, message, Typography } from 'antd';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+
+const { ExcelFile } = ReactExport;
+const { ExcelSheet, ExcelColumn } = ExcelFile;
 
 const CanvasTest = props => {
   const { image } = props;
@@ -8,6 +13,48 @@ const CanvasTest = props => {
   const [init, setinit] = useState(false);
   const [editLabel, setEditLabel] = useState(false);
   const [edit, setCurEdit] = useState('');
+
+  function draw(shapes) {
+    const canvas = document.getElementById('myCanvas');
+    const context = canvas.getContext('2d');
+    context.beginPath();
+    for (let i = 0; i < shapes.length; i += 1) {
+      const r = shapes[i];
+      context.lineWidth = 2;
+      context.rect(r.x, r.y, r.width, r.height);
+      context.strokeStyle = r.stroke;
+      context.stroke();
+    }
+  }
+
+  function inCorners(mx, my, s) {
+    const x1 = s.x;
+    const x2 = s.x + s.width;
+    const y1 = s.y;
+    const y2 = s.y + s.height;
+    const corners = [
+      [x1 - 10, x1 + 10, y1 - 10, y1 + 10],
+      [x2 - 10, x2 + 10, y1 - 10, y1 + 10],
+      [x1 - 10, x1 + 10, y2 - 10, y2 + 10],
+      [x2 - 10, x2 + 10, y2 - 10, y2 + 10],
+    ];
+    let curCorner = '';
+    corners.forEach((corner, idx) => {
+      if (mx >= corner[0] && mx <= corner[1] && my >= corner[2] && my <= corner[3]) {
+        if (idx === 0) {
+          curCorner = 'topLeft';
+        } else if (idx === 1) {
+          curCorner = 'topRight';
+        } else if (idx === 2) {
+          curCorner = 'bottomLeft';
+        } else {
+          curCorner = 'bottomRight';
+        }
+      }
+    });
+    return curCorner;
+  }
+
   useEffect(() => {
     if (!init) {
       const canvas = document.getElementById('myCanvas');
@@ -28,16 +75,18 @@ const CanvasTest = props => {
           const y1 = parseInt(points[1], 10);
           const x2 = parseInt(points[2], 10);
           const y2 = parseInt(points[3], 10);
-
-          shapes.push({
-            x: x1,
-            y: y1,
-            width: x2 - x1,
-            height: y2 - y1,
-            isDragging: false,
-            stroke: 'red',
-            label: captionsArr[idx].split(' ')[0],
-          });
+          if (x2 - x1 > 20 && y2 - y1 > 20) {
+            shapes.push({
+              x: x1,
+              y: y1,
+              width: x2 - x1,
+              height: y2 - y1,
+              isDragging: false,
+              isScaling: false,
+              stroke: 'red',
+              label: captionsArr[idx].split(' ')[0],
+            });
+          }
         }
       });
       console.log(shapes);
@@ -61,10 +110,10 @@ const CanvasTest = props => {
           // get the current mouse position
           var mx = parseInt(e.offsetX);
           var my = parseInt(e.offsetY);
-          console.log(e.clientX, e.offsetX);
-          console.log(e.clientY, e.offsetY);
+
           // test each shape to see if mouse is inside
           dragok = false;
+          let selectedShape = '';
           for (var i = 0; i < shapes.length; i++) {
             var s = shapes[i];
             // decide if the shape is a rect or circle
@@ -72,21 +121,26 @@ const CanvasTest = props => {
             // test if the mouse is inside this rect
             if (mx > s.x && mx < s.x + s.width && my > s.y && my < s.y + s.height) {
               // if yes, set that rects isDragging=true
-              dragok = true;
-              s.isDragging = true;
               s.stroke = 'blue';
-              setCurShape(s);
+              selectedShape = s;
+              dragok = true;
+              const curCorner = inCorners(mx, my, s);
+              if (curCorner !== '') {
+                s.isScaling = true;
+                s.scalingCorner = curCorner;
+                console.log(curCorner);
+              } else {
+                s.isDragging = true;
+              }
             } else {
               s.stroke = 'red';
             }
           }
+          setCurShape(selectedShape);
           // save the current mouse position
           startX = mx;
           startY = my;
-          context.beginPath();
-          for (let i = 0; i < shapes.length; i += 1) {
-            rect(shapes[i]);
-          }
+          draw(shapes);
         };
         canvas.onmouseup = e => {
           // tell the browser we're handling this mouse event
@@ -97,6 +151,7 @@ const CanvasTest = props => {
           dragok = false;
           for (var i = 0; i < shapes.length; i++) {
             shapes[i].isDragging = false;
+            shapes[i].isScaling = false;
           }
         };
         canvas.onmousemove = e => {
@@ -125,6 +180,36 @@ const CanvasTest = props => {
               if (s.isDragging) {
                 s.x += dx;
                 s.y += dy;
+              } else if (s.isScaling) {
+                if (s.scalingCorner === 'topLeft' && s.width - dx > 20 && s.height - dy > 20) {
+                  s.x += dx;
+                  s.y += dy;
+                  s.width -= dx;
+                  s.height -= dy;
+                } else if (
+                  s.scalingCorner === 'topRight' &&
+                  s.width + dx > 20 &&
+                  s.height - dy > 20
+                ) {
+                  s.y += dy;
+                  s.width += dx;
+                  s.height -= dy;
+                } else if (
+                  s.scalingCorner === 'bottomLeft' &&
+                  s.width - dx > 20 &&
+                  s.height + dy > 20
+                ) {
+                  s.x += dx;
+                  s.width -= dx;
+                  s.height += dy;
+                } else if (
+                  s.scalingCorner === 'bottomRight' &&
+                  s.width + dx > 20 &&
+                  s.height + dy > 20
+                ) {
+                  s.width += dx;
+                  s.height += dy;
+                }
               }
             }
 
@@ -137,25 +222,13 @@ const CanvasTest = props => {
             //     context.drawImage(base_image, 0, 0);
             //   };
             //   context.globalCompositeOperation = 'destination-atop';
-            context.beginPath();
-
-            for (let i = 0; i < shapes.length; i += 1) {
-              rect(shapes[i]);
-            }
+            draw(shapes);
 
             // reset the starting mouse position for the next mousemove
             startX = mx;
             startY = my;
           }
         };
-
-        // draw a single rect
-        function rect(r) {
-          context.lineWidth = 4;
-          context.rect(r.x, r.y, r.width, r.height);
-          context.strokeStyle = r.stroke;
-          context.stroke();
-        }
 
         context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
         context2.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -164,12 +237,9 @@ const CanvasTest = props => {
         base_image.onload = function() {
           context2.drawImage(base_image, 0, 0);
         };
-        context.beginPath();
 
         context.globalCompositeOperation = 'destination-atop';
-        for (let i = 0; i < shapes.length; i += 1) {
-          rect(shapes[i]);
-        }
+        draw(shapes);
       }
       setinit(true);
     }
@@ -178,10 +248,11 @@ const CanvasTest = props => {
   return (
     <>
       <div
-        style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '30px 10px' }}
+        style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '14px 10px' }}
       >
         {editLabel ? (
           <Input
+            autoFocus
             style={{ width: '400px' }}
             value={edit}
             onChange={e => setCurEdit(e.target.value)}
@@ -192,16 +263,63 @@ const CanvasTest = props => {
             }}
           />
         ) : (
-          <Tag
-            style={{ cursor: 'pointer' }}
-            color="cyan"
-            onClick={() => {
-              setEditLabel(true);
-              setCurEdit(curShape.label);
-            }}
-          >
-            {curShape.label || 'select a detect box'}
-          </Tag>
+          <div style={{ display: 'flex', flexDirection: 'row', alignContent: 'center' }}>
+            <Tag
+              style={{ cursor: 'pointer' }}
+              color="cyan"
+              onClick={() => {
+                if (curShape) {
+                  setEditLabel(true);
+                  setCurEdit(curShape.label);
+                }
+              }}
+            >
+              {curShape.label || 'select a detect box'}
+            </Tag>
+            {curShape && !editLabel && (
+              <Button
+                icon={<DeleteOutlined />}
+                shape="circle"
+                size="small"
+                onClick={() => {
+                  const curIdx = curShapes.findIndex(shape => shape === curShape);
+                  console.log(curShapes);
+                  curShapes.splice(curIdx, 1);
+                  console.log(curShapes);
+                  setCurShapes(curShapes);
+                  setCurShape('');
+                  draw(curShapes);
+                }}
+                style={{ marginRight: 4 }}
+              />
+            )}
+            {!editLabel && (
+              <Button
+                icon={<PlusOutlined />}
+                shape="circle"
+                size="small"
+                onClick={async () => {
+                  curShapes.forEach(shape => {
+                    shape.stroke = 'red';
+                  });
+                  const newShape = {
+                    x: 0,
+                    y: 0,
+                    width: 100,
+                    height: 100,
+                    isDragging: false,
+                    isScaling: false,
+                    stroke: 'blue',
+                    label: 'New Label',
+                  };
+                  curShapes.push(newShape);
+                  await setCurShape(newShape);
+                  setCurShapes(curShapes);
+                  draw(curShapes);
+                }}
+              />
+            )}
+          </div>
         )}
       </div>
       <canvas id="myCanvas2" height="500px" width="800px" style={{ overflow: 'scroll' }}>
@@ -223,6 +341,24 @@ const CanvasTest = props => {
         <Button type="primary" onClick={() => message.success('updated the detection result')}>
           Update
         </Button>
+        <ExcelFile
+          filename="result export"
+          element={
+            <Button style={{ marginLeft: 8 }} type="primary">
+              <Typography.Paragraph strong type="secondary" style={{ padding: 0, margin: 0 }}>
+                Result Export
+              </Typography.Paragraph>
+            </Button>
+          }
+        >
+          <ExcelSheet data={curShapes} name="BD_Extract">
+            <ExcelColumn label="Label" value={col => col.label} />
+            <ExcelColumn label="Box-x-axis" value={col => col.x} />
+            <ExcelColumn label="Box-y-axis" value={col => col.y} />
+            <ExcelColumn label="Box-width" value={col => col.width} />
+            <ExcelColumn label="Box-height" value={col => col.height} />
+          </ExcelSheet>
+        </ExcelFile>
       </div>
     </>
   );
