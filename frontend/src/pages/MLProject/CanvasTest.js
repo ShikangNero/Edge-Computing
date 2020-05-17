@@ -347,7 +347,8 @@ const CanvasTest = props => {
             const element = document.createElement('a');
             element.setAttribute(
               'href',
-              'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(curShapes)),
+              'data:json/plain;charset=utf-8,' +
+                encodeURIComponent(JSON.stringify({ boxes: curShapes })),
             );
             element.setAttribute('download', 'result');
 
